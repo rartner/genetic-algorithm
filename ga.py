@@ -4,7 +4,7 @@
 '''
 import numpy as np
 
-MIN_BOUND = 10
+MIN_BOUND = 0
 MAX_BOUND = 10
 
 class Individual():
@@ -37,7 +37,7 @@ class Population(object):
         return strn
 
 def main():
-    pop = Population(10, 10, "PERM")
+    pop = Population(10, 10, "INT")
     print (str(pop))
 
 if __name__ == '__main__':
