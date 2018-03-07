@@ -1,7 +1,3 @@
-'''
-    sudo pip install quantumrandom >> too slow
-        import quantumrandom as qr
-'''
 import numpy as np
 
 MIN_BOUND = 0
@@ -37,7 +33,7 @@ class Population(object):
         return strn
 
 def main():
-    pop = Population(10, 10, "INT")
+    pop = Population(10, 10, "BIN")
     print (str(pop))
 
 if __name__ == '__main__':
