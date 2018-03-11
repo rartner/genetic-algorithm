@@ -1,41 +1,28 @@
+import argparse
 import numpy as np
-
-MIN_BOUND = 0
-MAX_BOUND = 10
-
-class Individual():
-    def __init__(self, size, encoding):
-        self.chromosome = self.init_chromosome(size, encoding)
-
-    def init_chromosome(self, size, encoding):
-        if encoding == "BIN":
-            return np.random.randint(2, size=size)
-        elif encoding == "INT":
-            return np.random.randint(MIN_BOUND, MAX_BOUND, size=size)
-        elif encoding == "REAL":
-            return np.random.uniform(MIN_BOUND, MAX_BOUND, size=size)
-        elif encoding == "PERM":
-            return np.random.permutation(size)
-        else:
-            raise Exception("Invalid encoding")
-
-    def __str__(self):
-        return np.array2string(self.chromosome)
-
-class Population(object):
-    def __init__(self, popSize, chromosomeSize, encoding):
-        self.individuals = [Individual(chromosomeSize, encoding) for i in range (0, popSize)]
-
-    def __str__(self):
-        strn = ''
-        for i in self.individuals:
-            strn += str(i) + "\n"
-        return strn
+from population import Population
 
 def main():
-    pop = Population(10, 10, "BIN")
+    parser = argparse.ArgumentParser(description='Genetic algorithm')
+    parser.add_argument('-min',   type=int, help='lower bound', default=0)
+    parser.add_argument('-max',   type=int, help='upper bound', default=10)
+    parser.add_argument('-csize', type=int, help='chromosome size', default=10)
+    parser.add_argument('-enc',   help='chromosome encoding', choices= ['BIN', 'INT', 'REAL', 'INT-PERM'], required=True)
+    parser.add_argument('-psize', type=int, help='population size', default=10)
+    parser.add_argument('-seed',  type=int, help='seed')
+    args = parser.parse_args()
+
+    minbound = args.min if args.min else 0
+    maxbound = args.max if args.max else 10
+    csize = args.csize
+    psize = args.psize
+    if (args.seed):
+        np.random.seed(args.seed)
+
+    pop = Population(args.enc, psize, csize, minbound, maxbound)
     print (str(pop))
+
+    pop._diversity()
 
 if __name__ == '__main__':
     main()
-

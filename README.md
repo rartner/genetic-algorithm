@@ -5,11 +5,12 @@ Genetic algorithm @ OCEV/UDESC
 ## Install
 
 ``` bash
-> pip install numpy
+> pip3 install numpy
+> pip3 install matplotlib
 ```
 
-## Run 
+## Run
 
-``` bash 
+``` bash
 > python ga.py
 ```
