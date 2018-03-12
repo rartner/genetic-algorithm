@@ -7,13 +7,13 @@ class Individual():
 
     def __init_chromosome(self, encoding, size, minbound, maxbound):
         if encoding == 'BIN':
-            return np.random.randint(2, size=size)
+            return np.random.RandomState().randint(2, size=size)
         elif encoding == 'INT':
-            return np.random.randint(minbound, maxbound, size=size)
+            return np.random.RandomState().randint(minbound, maxbound, size=size)
         elif encoding == 'REAL':
-            return np.random.uniform(minbound, maxbound, size=size)
+            return np.random.RandomState().uniform(minbound, maxbound, size=size)
         elif encoding == 'INT-PERM':
-            return np.random.permutation(size)
+            return np.random.RandomState().permutation(size)
         else:
             raise Exception('Invalid encoding')
 
