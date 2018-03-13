@@ -2,32 +2,33 @@ import numpy as np
 import math
 from individual import Individual
 
-'''
-Diversidade:
-- centroid - bin/real
-- hamming: bin
-- euclidiana: real
-- manhattan: inteiro
-'''
-
 class Population():
-    def __init__(self, encoding, psize, csize, minbound, maxbound):
-        self.individuals = [Individual(encoding, csize, minbound, maxbound) for i in range (0, psize)]
+
+    max_diversity = None
+
+    def __init__(self, encoding, psize, csize, min_bound, max_bound):
+        self.individuals = [Individual(csize, encoding, min_bound, max_bound) for i in range (0, psize)]
         self.psize = psize
         self.csize = csize
-        self.minbound = minbound
-        self.maxbound = maxbound
+        self.min_bound = min_bound
+        self.max_bound = max_bound
         self.encoding = encoding
 
-    def _diversity(self):
+    def diversity(self):
         centroid = [(np.sum((self.individuals[i].chromosome[j]) for i in range(self.psize)) / self.psize) for j in range(self.csize)]
         diversity = [(np.sum(((self.individuals[i].chromosome[j] - centroid[j])**2) for i in range(self.psize))) for j in range(self.csize)]
-        print (centroid)
-        print (diversity)
-        print (self.__sigmoid(np.sum(diversity)))
+        return self._normalize(np.sum(diversity))
 
-    def __sigmoid(self, diversity):
-        return 1 / (1 + math.exp(-diversity))
+    def _normalize(self, value):
+        if (self.max_diversity):
+            return (value / self.max_diversity)
+        else:
+            self.max_diversity = value
+            return 1
+
+    def fitness(self):
+        for i in self.individuals:
+            print (i.fitness_real(i.chromosome))
 
     def __str__(self):
         strn = ''

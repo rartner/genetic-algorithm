@@ -22,7 +22,8 @@ def main():
     pop = Population(args.enc, psize, csize, minbound, maxbound)
     print (str(pop))
 
-    pop._diversity()
+    # pop.diversity()
+    # pop.fitness()
 
 if __name__ == '__main__':
     main()
