@@ -48,12 +48,26 @@ class Individual_Real:
         self.size = size
         self.min_bound = min_bound
         self.max_bound = max_bound
+        self.is_bin = True
         self.chromosome = self.__init_chromosome(size, min_bound, max_bound)
+        self.conc()
 
     def __init_chromosome(self, size, min_bound, max_bound):
-        return np.random.uniform(min_bound, max_bound, size=size)
+        if (self.is_bin):
+            return np.random.randint(0, 2, size=26)
+        else:
+            return np.random.uniform(min_bound, max_bound, size=size)
 
-    ''' Ackley's function '''
+    def conc(self):
+        gene = []
+        for g in np.split(self.chromosome, 2):
+            gene.append(''.join(map(str, g)))
+        for i in gene:
+            print ('i ', i)
+            print ('a ', int(i,2))
+            print ('as ', str(int(i,2)))
+
+    ''' Ackley's function'''
     def fitness(self):
     	first_sum = 0.0
     	second_sum = 0.0
