@@ -52,20 +52,30 @@ class Individual_Real:
         self.chromosome = self.__init_chromosome(size, min_bound, max_bound)
         self.conc()
 
+    def _decode(self, value):
+        value = int(str(value), 2)
+        print ('value to decode:', value)
+        return np.around( (self.lb_domain + (((self.ub_domain - self.lb_domain) / ((2 ** self.gene_size) - 1)  ) * value)), self.decimals)
+
     def __init_chromosome(self, size, min_bound, max_bound):
-        if (self.is_bin):
-            return np.random.randint(0, 2, size=26)
+        if (self.is_bin): # Ackley binary
+            self.gene_size = 13
+            self.num_genes = 2
+            self.lb_domain = -32
+            self.ub_domain = 32
+            self.decimals = 2
+            return np.random.randint(0, 2, size=(self.gene_size * self.num_genes))
         else:
             return np.random.uniform(min_bound, max_bound, size=size)
 
     def conc(self):
-        gene = []
-        for g in np.split(self.chromosome, 2):
-            gene.append(''.join(map(str, g)))
-        for i in gene:
-            print ('i ', i)
-            print ('a ', int(i,2))
-            print ('as ', str(int(i,2)))
+        genes = []
+        for gene in np.split(self.chromosome, self.num_genes):
+            genes.append(''.join(map(str, gene)))
+        genes_real = map(self._decode, genes)
+        print ('>>>>>>>>>>>>>>>>>>>>>> individual')
+        for i in genes_real:
+            print ('value decoded:', i)
 
     ''' Ackley's function'''
     def fitness(self):
