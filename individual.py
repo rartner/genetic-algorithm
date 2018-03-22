@@ -24,12 +24,37 @@ class Individual_Int:
         self.size = size
         self.min_bound = min_bound
         self.max_bound = max_bound
+        self.is_bin = True
         self.chromosome = self.__init_chromosome(size, min_bound, max_bound)
 
     def __init_chromosome(self, size, min_bound, max_bound):
-        return np.random.randint(min_bound, max_bound, size=size)
+        if (self.is_bin): # radios
+            self.gene_size = 5
+            self.num_genes = 2
+            return np.random.randint(0, 2, size=(self.gene_size * self.num_genes))
+        else:
+            return np.random.randint(min_bound, max_bound, size=size)
 
     def fitness(self):
+        if(self.is_bin):
+            return self._bin_fitness()
+        else:
+            return self._original_fitness()
+
+    def _decode(self, genes):
+        genes = [(int(gene, 2)) for gene in genes]
+        print ('genes >>>>          ', str(genes))
+        genes[0] = int(( 24 / ((2 ** self.gene_size) - 1)) * genes[0] )
+        genes[1] = int(( 16 / ((2 ** self.gene_size) - 1)) * genes[1] )
+        print ('genes in range >>>> ', str(genes))
+
+    def _bin_fitness(self):
+        genes = []
+        for gene in np.split(self.chromosome, self.num_genes):
+            genes.append(''.join(map(str, gene)))
+        self._decode(genes)
+
+    def _original_fitness(self):
         fitness_value = 0
         for gene in range(self.size - 1):
             if self.chromosome[gene] % 2 == 0:

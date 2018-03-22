@@ -28,7 +28,7 @@ class Population():
 
     def fitness(self):
         for i in self.individuals:
-            print (i.fitness())
+            i.fitness()
 
     def __str__(self):
         strn = ''
