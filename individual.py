@@ -78,12 +78,16 @@ class Individual_Real:
         self.max_bound = max_bound
         self.is_bin = True
         self.chromosome = self.__init_chromosome(size, min_bound, max_bound)
-        self.conc()
 
-    def _decode(self, value):
-        value = int(str(value), 2)
-        print ('value to decode:', value)
-        return np.around( (self.lb_domain + (((self.ub_domain - self.lb_domain) / ((2 ** self.gene_size) - 1)  ) * value)), self.decimals)
+    def _decode(self, genes):
+        genes = [(int(gene, 2)) for gene in genes]
+        genes = [(self.__to_domain(i)) for i in genes]
+        print ('genes ', str(genes))
+        return genes
+
+    def __to_domain(self, value):
+        print (value)
+        return float(self.lb_domain + ((self.ub_domain - self.lb_domain + 1) / ((2 ** self.gene_size) - 1)) * value)
 
     def __init_chromosome(self, size, min_bound, max_bound):
         if (self.is_bin): # Ackley binary
@@ -96,20 +100,27 @@ class Individual_Real:
         else:
             return np.random.uniform(min_bound, max_bound, size=size)
 
-    def conc(self):
+    def _decode_genes(self):
         genes = []
         for gene in np.split(self.chromosome, self.num_genes):
             genes.append(''.join(map(str, gene)))
-        genes_real = map(self._decode, genes)
-        print ('>>>>>>>>>>>>>>>>>>>>>> individual')
-        for i in genes_real:
-            print ('value decoded:', i)
+        genes = self._decode(genes)
+        return genes
+
+    def sigmoid(self, value):
+        return 1.0 / (1 + math.exp(-value))
+
+    def fitness(self):
+        if self.is_bin:
+            return self._fitness(self._decode_genes())
+        else:
+            return self._fitness(self.chromosome)
 
     ''' Ackley's function'''
-    def fitness(self):
+    def _fitness(self, values):
     	first_sum = 0.0
     	second_sum = 0.0
-    	for gene in self.chromosome:
+    	for gene in values:
     		first_sum += gene ** 2.0
     		second_sum += math.cos(2.0 * math.pi * gene)
     	n = float(self.size)
@@ -146,6 +157,3 @@ class Individual():
             return Individual_Perm(size)
         else:
             raise Exception('Invalid encoding')
-
-    def sigmoid(self, value):
-        return 1.0 / (1 + math.exp(-value))
