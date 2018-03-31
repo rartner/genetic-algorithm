@@ -43,16 +43,19 @@ class Individual_Int:
 
     def _decode(self, genes):
         genes = [(int(gene, 2)) for gene in genes]
-        print ('genes >>>>          ', str(genes))
         genes[0] = int(( 24 / ((2 ** self.gene_size) - 1)) * genes[0] )
         genes[1] = int(( 16 / ((2 ** self.gene_size) - 1)) * genes[1] )
-        print ('genes in range >>>> ', str(genes))
+        return genes
 
     def _bin_fitness(self):
         genes = []
         for gene in np.split(self.chromosome, self.num_genes):
             genes.append(''.join(map(str, gene)))
-        self._decode(genes)
+        genes = self._decode(genes)
+        fo = float((30*genes[0] + 40*genes[1]) / 1360)
+        h = max(0, (genes[0] + 2*genes[1] - 40) / 16)
+        print (fo - h)
+        return fo - h
 
     def _original_fitness(self):
         fitness_value = 0
@@ -143,3 +146,6 @@ class Individual():
             return Individual_Perm(size)
         else:
             raise Exception('Invalid encoding')
+
+    def sigmoid(self, value):
+        return 1.0 / (1 + math.exp(-value))
