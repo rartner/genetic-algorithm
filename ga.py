@@ -10,6 +10,7 @@ def main():
     parser.add_argument('-enc',   help='chromosome encoding', choices=['BIN', 'INT', 'REAL', 'INT-PERM'], required=True)
     parser.add_argument('-psize', type=int, help='population size', default=10)
     parser.add_argument('-seed',  type=int, help='seed')
+    parser.add_argument('-is_bin', help='is bin', action='store_true')
     args = parser.parse_args()
 
     minbound = args.min if args.min else 0
