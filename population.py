@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import time
 from individual import Individual
 
 class Population():
@@ -30,7 +31,12 @@ class Population():
             return 1
 
     def fitness(self):
-        self.evolve()
+        generation = 0
+        while(True):
+            print ('>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GERAÇÃO', generation, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+            self.evolve()
+            generation += 1
+            # time.sleep(2)
 
     def evolve(self):
         print (' ==============  SELEÇÃO  ==============')
@@ -94,6 +100,10 @@ class Population():
     def _roulette(self):
         sum_fitness = np.sum([i.fitness for i in self.individuals])
         print ('soma fitness: ', sum_fitness)
+        fit = [i.fitness for i in self.individuals]
+        for i in range(self.psize):
+            if (fit[i] == 9):
+                time.sleep(100)
         idx = 0
         for i in self.individuals:
             i.fitness = i.fitness / sum_fitness
