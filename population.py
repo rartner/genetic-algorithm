@@ -1,14 +1,20 @@
 import numpy as np
 import math
 import time
+import matplotlib.pyplot as plt
+from scipy.interpolate import spline
 from individual import Individual
 
 class Population():
 
     max_diversity = None
+    best_fit_plt = []
+    mean_fit_plt = []
+    best_individual = None
 
-    def __init__(self, encoding, psize, csize, min_bound, max_bound, ctax, mtax, tsize = None):
+    def __init__(self, encoding, psize, csize, min_bound, max_bound, ctax, mtax, generations, tsize = None):
         self.individuals = [Individual(csize, encoding, min_bound, max_bound) for i in range (0, psize)]
+        self.generations = generations
         self.psize = psize
         self.csize = csize
         self.ctax = ctax
@@ -32,27 +38,43 @@ class Population():
 
     def fitness(self):
         generation = 0
-        while(True):
-            print ('>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GERAÇÃO', generation, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+        while(generation < self.generations):
             self.evolve()
             generation += 1
-            # time.sleep(2)
+
+        best_x = np.linspace(0, self.generations - 1, self.generations * 10)
+        best_y = spline(range(self.generations), self.best_fit_plt, best_x)
+        mean_x = np.linspace(0, self.generations - 1, self.generations * 10)
+        mean_y = spline(range(self.generations), self.mean_fit_plt, mean_x)
+
+        plt.plot(best_x, best_y)
+        plt.plot(mean_x, mean_y)
+
+        plt.legend(['best', 'mean'])
+
+        plt.ylabel('fitness')
+        plt.xlabel('generation')
+        plt.show()
 
     def evolve(self):
-        print (' ==============  SELEÇÃO  ==============')
         parents = self._select()
-        print (' ============== CROSSOVER ==============')
         self._crossover(parents)
-        for i in self.individuals:
-            print (str(i.chromosome))
-        print (' ==============  MUTAÇÃO  ==============')
         self._mutate()
-        for i in self.individuals:
-            print (str(i.chromosome))
+        new_list = sorted(self.individuals, key=lambda x : x.fitness)
+        new_list[0] = self.best_individual
+        self.individuals = new_list
 
     def _select(self):
+        max_fitness = 0.0
         for i in self.individuals:
             i.eval_fitness()
+            if (i.fitness > max_fitness):
+                max_fitness = i.fitness
+                if (self.best_individual == None):
+                    self.best_individual = i
+                if (i.fitness > self.best_individual.fitness):
+                    self.best_individual = i
+        self.best_fit_plt += [max_fitness]
         if (self.tsize != None):
             return self._tournment()
         else:
@@ -93,24 +115,18 @@ class Population():
     def _mutate(self):
         c = 0
         for i in self.individuals:
-            print ('> Indivíduo', c)
             i.mutate(self.mtax)
             c += 1
 
     def _roulette(self):
         sum_fitness = np.sum([i.fitness for i in self.individuals])
-        print ('soma fitness: ', sum_fitness)
+        self.mean_fit_plt += [float(sum_fitness) / self.psize]
         fit = [i.fitness for i in self.individuals]
-        for i in range(self.psize):
-            if (fit[i] == 9):
-                time.sleep(100)
         idx = 0
         for i in self.individuals:
             i.fitness = i.fitness / sum_fitness
-            print (idx, i.fitness * sum_fitness, '\t', i.fitness)
             idx += 1
         indexes = np.random.choice(self.psize, self.psize, p=[i.fitness for i in self.individuals])
-        print ('indexes selecionados: ', indexes)
         parents = [self.individuals[i] for i in indexes]
         return parents
 

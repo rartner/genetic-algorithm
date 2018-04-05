@@ -20,13 +20,13 @@ class Individual_Bin:
         for gene in range(self.size):
             prob = np.random.RandomState().uniform(0, 1)
             if (prob < mtax):
-                print ('Gene:', gene, '\tProb:', prob)
+                # print ('Gene:', gene, '\tProb:', prob)
                 self.chromosome[gene] = 0 if self.chromosome[gene] == 1 else 1
 
     def mate(self, mother):
         childs = [[], []]
-        print ('pai: \t', str(self.chromosome))
-        print ('mae: \t', str(mother.chromosome))
+        # print ('pai: \t', str(self.chromosome))
+        # print ('mae: \t', str(mother.chromosome))
         for child in range(2):
             chromosome = np.zeros(len(self.chromosome), dtype=np.uint8)
             for i in range(len(self.chromosome)):
@@ -35,8 +35,8 @@ class Individual_Bin:
                 else:
                     chromosome[i] = mother.chromosome[i]
             childs[child] = chromosome
-            print ('filho: \t', str(chromosome))
-        print ('......')
+        #    print ('filho: \t', str(chromosome))
+        # print ('......')
         return childs
 
     def _sigmoid(self, value):
