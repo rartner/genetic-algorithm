@@ -4,6 +4,8 @@ import numpy as np
 class Individual_Bin:
     def __init__(self, size):
         self.size = size
+        self.mutate_uniform = False                     # crossover uniform
+        self.cpoints = 1                                # crossover points
         self.chromosome = self.__init_chromosome(size)
 
     def __init_chromosome(self, size):
@@ -24,9 +26,16 @@ class Individual_Bin:
                 self.chromosome[gene] = 0 if self.chromosome[gene] == 1 else 1
 
     def mate(self, mother):
+        if (self.mutate_uniform):
+            return self._uniform(mother)
+        else:
+            if (self.cpoints == 1):
+                return self._one_point(mother)
+            else:
+                return self._two_points(mother)
+
+    def _uniform(self, mother):
         childs = [[], []]
-        # print ('pai: \t', str(self.chromosome))
-        # print ('mae: \t', str(mother.chromosome))
         for child in range(2):
             chromosome = np.zeros(len(self.chromosome), dtype=np.uint8)
             for i in range(len(self.chromosome)):
@@ -35,8 +44,24 @@ class Individual_Bin:
                 else:
                     chromosome[i] = mother.chromosome[i]
             childs[child] = chromosome
-        #    print ('filho: \t', str(chromosome))
-        # print ('......')
+        return childs
+
+    def _one_point(self, mother):
+        childs = []
+        idx = np.random.randint(1, self.size - 1)
+        childs.append(self.chromosome[:idx] + mother.chromosome[idx:])
+        childs.append(mother.chromosome[:idx] + self.chromosome[idx:])
+        return childs
+
+    def _two_points(self, mother):
+        childs = []
+        idx1 = np.random.randint(1, self.size - 1)
+        idx2 = idx1
+        while (idx2 == idx1):
+            idx2 = np.random.randint(1, self.size - 1)
+        if (idx1 > idx2): idx1, idx2 = idx2, idx1
+        childs.append(self.chromosome[:idx] + mother.chromosome[idx:])
+        childs.append(mother.chromosome[:idx] + self.chromosome[idx:])
         return childs
 
     def _sigmoid(self, value):
