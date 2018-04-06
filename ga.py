@@ -16,6 +16,7 @@ def main():
     parser.add_argument('-psize', type=int, help='population size', default=10)
     parser.add_argument('-seed',  type=int, help='seed')
     parser.add_argument('-bin', help='use binary genotype (for real or int encodings)', action='store_true')
+    parser.add_argument('-el', help='use elitism', action='store_true')
     args = parser.parse_args()
 
     if (args.seed):
@@ -28,9 +29,11 @@ def main():
                      args.max,
                      args.ctax,
                      args.mtax,
-                     args.generations)
+                     args.generations,
+                     args.bin,
+                     args.el)
     print (str(pop))
-    pop.fitness()
+    pop.evolve()
 
 # Disable
 def block_print():
