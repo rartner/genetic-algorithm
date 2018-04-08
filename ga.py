@@ -9,7 +9,7 @@ def main():
     parser.add_argument('-min',   type=int, help='lower bound', default=0)
     parser.add_argument('-max',   type=int, help='upper bound', default=10)
     parser.add_argument('-ctax',  type=float, help='crossover tax', default=1.0)
-    parser.add_argument('-mtax',  type=int, help='mutate tax', default=0.03)
+    parser.add_argument('-mtax',  type=float, help='mutate tax', default=0.03)
     parser.add_argument('-csize', type=int, help='chromosome size', default=10)
     parser.add_argument('-tsize', type=int, help='tournment size (for tournment selection)')
     parser.add_argument('-enc',   help='chromosome encoding', choices=['BIN', 'INT', 'REAL', 'INT-PERM'], required=True)

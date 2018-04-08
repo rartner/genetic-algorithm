@@ -68,8 +68,6 @@ class Population():
             return self._roulette()
 
     def _crossover(self, parents):
-        for i in parents:
-            i.ctax = np.random.RandomState().uniform(0, 1)
         mates = 0
         if (self.has_elitism):
             self.individuals[mates] = copy.deepcopy(self.best_individual)
@@ -77,9 +75,10 @@ class Population():
             mates += 1
         father, mother = None, None
         while (mates <= self.psize - 1):
+            ctax = np.random.RandomState().uniform(0, 1)
             individual = parents[np.random.randint(self.psize)]
-            if (i.ctax > self.ctax):
-                self.individuals[mates].chromosome = individual
+            if (ctax > self.ctax):
+                self.individuals[mates].chromosome = individual.chromosome
                 mates += 1
             else:
                 if (father == None):
@@ -92,17 +91,6 @@ class Population():
                             self.individuals[mates].chromosome = c
                             mates += 1
                     father, mother = None, None
-
-    def _mate(self, father, mother, mates):
-        for child in range(2):
-            chromosome = np.zeros(self.csize)
-            for i in range(self.csize):
-                if (np.random.randint(2) == 1):
-                    chromosome[i] = father.chromosome[i]
-                else:
-                    chromosome[i] = mother.chromosome[i]
-            self.individuals[mates].chromosome = chromosome
-            mates += 1
 
     def _mutate(self):
         c = 0
@@ -149,10 +137,11 @@ class Population():
 
         ''' Fig 2 - Diversidade '''
         plt.figure(2)
-        plt.plot(self.diversity)
-        # div_x = np.linspace(0, self.generations - 1, self.generations * 10)
-        # div_y = spline(range(self.generations), self.diversity, div_x)
-        # plt.plot(div_x, div_y)
+        self.diversity = [(float(x) / max(self.diversity)) for x in self.diversity]
+        # plt.plot(self.diversity)
+        div_x = np.linspace(0, self.generations - 1, self.generations * 10)
+        div_y = spline(range(self.generations), self.diversity, div_x)
+        plt.plot(div_x, div_y)
 
         plt.ylabel('diversity')
         plt.xlabel('generation')

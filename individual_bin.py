@@ -1,11 +1,13 @@
+import copy
 import math
 import numpy as np
 
 class Individual_Bin:
+
     def __init__(self, size):
         self.size = size
-        self.mutate_uniform = False                     # crossover uniform
-        self.cpoints = 1                                # crossover points
+        self.mutate_uniform = True                     # crossover uniform
+        self.cpoints = 2                                # crossover points
         self.chromosome = self.__init_chromosome(size)
 
     def __init_chromosome(self, size):
@@ -22,7 +24,6 @@ class Individual_Bin:
         for gene in range(self.size):
             prob = np.random.RandomState().uniform(0, 1)
             if (prob < mtax):
-                # print ('Gene:', gene, '\tProb:', prob)
                 self.chromosome[gene] = 0 if self.chromosome[gene] == 1 else 1
 
     def mate(self, mother):
@@ -49,8 +50,8 @@ class Individual_Bin:
     def _one_point(self, mother):
         childs = []
         idx = np.random.randint(1, self.size - 1)
-        childs.append(self.chromosome[:idx] + mother.chromosome[idx:])
-        childs.append(mother.chromosome[:idx] + self.chromosome[idx:])
+        childs.append(np.concatenate([self.chromosome[:idx], mother.chromosome[idx:]]))
+        childs.append(np.concatenate([mother.chromosome[:idx], self.chromosome[idx:]]))
         return childs
 
     def _two_points(self, mother):
@@ -60,8 +61,11 @@ class Individual_Bin:
         while (idx2 == idx1):
             idx2 = np.random.randint(1, self.size - 1)
         if (idx1 > idx2): idx1, idx2 = idx2, idx1
-        childs.append(self.chromosome[:idx] + mother.chromosome[idx:])
-        childs.append(mother.chromosome[:idx] + self.chromosome[idx:])
+        c1, c2 = copy.deepcopy(self.chromosome), copy.deepcopy(mother.chromosome)
+        c1[idx1:idx2] = mother.chromosome[idx1:idx2]
+        c2[idx1:idx2] = self.chromosome[idx1:idx2]
+        childs.append(c1)
+        childs.append(c2)
         return childs
 
     def _sigmoid(self, value):
