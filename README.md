@@ -14,5 +14,5 @@ Genetic algorithm @ OCEV/UDESC
 ## Run
 
 ``` bash
-> python ga.py
+> python ga.py -h
 ```

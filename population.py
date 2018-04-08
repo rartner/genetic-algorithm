@@ -138,10 +138,10 @@ class Population():
         ''' Fig 2 - Diversidade '''
         plt.figure(2)
         self.diversity = [(float(x) / max(self.diversity)) for x in self.diversity]
-        # plt.plot(self.diversity)
-        div_x = np.linspace(0, self.generations - 1, self.generations * 10)
-        div_y = spline(range(self.generations), self.diversity, div_x)
-        plt.plot(div_x, div_y)
+        plt.plot(self.diversity)
+        # div_x = np.linspace(0, self.generations - 1, self.generations * 10)
+        # div_y = spline(range(self.generations), self.diversity, div_x)
+        # plt.plot(div_x, div_y)
 
         plt.ylabel('diversity')
         plt.xlabel('generation')

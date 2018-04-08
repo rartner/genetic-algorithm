@@ -6,8 +6,8 @@ class Individual_Bin:
 
     def __init__(self, size):
         self.size = size
-        self.mutate_uniform = True                     # crossover uniform
-        self.cpoints = 2                                # crossover points
+        self.uniform_c = True # Uniform crossover
+        self.cpoints = 2      # Crossover points
         self.chromosome = self.__init_chromosome(size)
 
     def __init_chromosome(self, size):
@@ -27,7 +27,7 @@ class Individual_Bin:
                 self.chromosome[gene] = 0 if self.chromosome[gene] == 1 else 1
 
     def mate(self, mother):
-        if (self.mutate_uniform):
+        if (self.uniform_c):
             return self._uniform(mother)
         else:
             if (self.cpoints == 1):
