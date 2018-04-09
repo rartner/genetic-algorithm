@@ -8,12 +8,24 @@ class Individual_Bin:
         self.size = size
         self.uniform_c = True # Uniform crossover
         self.cpoints = 2      # Crossover points
+        self.rproblem = True
         self.chromosome = self.__init_chromosome(size)
 
     def __init_chromosome(self, size):
-        return np.random.randint(2, size=size)
+        if (self.rproblem):
+            self.gene_size = 5
+            self.num_genes = 2
+            return np.random.randint(0, 2, size=(self.gene_size * self.num_genes))
+        else:
+            return np.random.randint(2, size=size)
 
     def eval_fitness(self):
+        if (self.rproblem):
+            self._radio_fitness()
+        else:
+            self._bin_fitness()
+
+    def _bin_fitness(self):
         fitness_value = 0
         for gene in range(self.size - 1):
             if self.chromosome[gene] != self.chromosome[gene + 1]:
@@ -70,6 +82,28 @@ class Individual_Bin:
 
     def _sigmoid(self, value):
         return 1.0 / (1 + math.exp(-value))
+
+    ''' Radios problem '''
+    def _radio_fitness(self):
+        genes = []
+        for gene in np.split(self.chromosome, self.num_genes):
+            genes.append(''.join(map(str, gene)))
+        genes = self.decode(genes)
+        fo = float((30*genes[0] + 40*genes[1]) / 1040)
+        h = max(0, (genes[0] + 2*genes[1] - 40) / 16)
+        self.fitness = fo - h
+
+    def decode(self, genes):
+        genes = [(int(gene, 2)) for gene in genes]
+        genes[0] = int(( 24 / ((2 ** self.gene_size) - 1)) * genes[0] )
+        genes[1] = int(( 16 / ((2 ** self.gene_size) - 1)) * genes[1] )
+        return genes
+
+    def get_result(self):
+        genes = []
+        for gene in np.split(self.chromosome, self.num_genes):
+            genes.append(''.join(map(str, gene)))
+        return str(self.decode(genes))
 
     def __str__(self):
         return np.array2string(self.chromosome)

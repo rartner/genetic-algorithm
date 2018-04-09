@@ -51,6 +51,7 @@ class Population():
             self._diversity()
             generation += 1
         self._plot()
+        self.get_best_result()
 
     def _select(self):
         ''' get the best individual in the generation '''
@@ -148,6 +149,10 @@ class Population():
         plt.xlabel('generation')
 
         plt.show()
+
+    def get_best_result(self):
+        best = sorted(self.individuals, key=lambda i: i.fitness, reverse=True)[0]
+        print ('Best individual: {}'.format(best.get_result()))
 
     def __str__(self):
         strn = ''
