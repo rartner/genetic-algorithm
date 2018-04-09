@@ -28,6 +28,9 @@ def main():
     if (args.seed):
         np.random.seed(args.seed)
 
+    if (args.tsize < 2):
+        raise Exception('O torneio deve possuir mais que 01 gladiador')
+
     pop = Population(args.enc,
                      args.psize,
                      args.csize,
@@ -37,7 +40,8 @@ def main():
                      args.mtax,
                      args.generations,
                      args.bin,
-                     args.el)
+                     args.el,
+                     tsize=args.tsize)
     print ('first population:\n{}'.format(str(pop)))
     pop.evolve()
     print ('last population:\n{}'.format(str(pop)))

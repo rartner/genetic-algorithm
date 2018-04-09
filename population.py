@@ -1,5 +1,6 @@
 import copy
 import math
+import random
 import time
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,7 +15,7 @@ class Population():
     max_diversity   = None
     best_individual = None
 
-    def __init__(self, encoding, psize, csize, min_bound, max_bound, ctax, mtax, generations, bin, el, tsize = None):
+    def __init__(self, encoding, psize, csize, min_bound, max_bound, ctax, mtax, generations, is_bin, el, tsize = None):
         self.individuals = [Individual(csize, encoding, min_bound, max_bound) for i in range (0, psize)]
         self.generations = generations
         self.psize = psize
@@ -24,7 +25,7 @@ class Population():
         self.min_bound = min_bound
         self.max_bound = max_bound
         self.encoding = encoding
-        self.is_bin = bin
+        self.is_bin = is_bin
         self.has_elitism = el
         self.tsize = tsize
 
@@ -52,6 +53,7 @@ class Population():
         self._plot()
 
     def _select(self):
+        ''' get the best individual in the generation '''
         max_fitness = 0.0
         for i in self.individuals:
             i.eval_fitness()
@@ -62,6 +64,10 @@ class Population():
                 if (i.fitness > self.best_individual.fitness):
                     self.best_individual = i
         self.best_fit_plt += [max_fitness]
+        sum_fitness = np.sum([i.fitness for i in self.individuals])
+        self.mean_fit_plt += [float(sum_fitness) / self.psize]
+        for i in self.individuals:
+            i.fitness = i.fitness / sum_fitness
         if (self.tsize != None):
             return self._tournment()
         else:
@@ -102,21 +108,16 @@ class Population():
                 self.individuals[i].mutate(self.mtax)
 
     def _roulette(self):
-        sum_fitness = np.sum([i.fitness for i in self.individuals])
-        self.mean_fit_plt += [float(sum_fitness) / self.psize]
-        for i in self.individuals:
-            i.fitness = i.fitness / sum_fitness
-            if (self.best_individual != None):
-                if (i.fitness > self.best_individual.fitness):
-                    self.best_individual = i
-            else:
-                self.best_individual = i
         indexes = np.random.choice(self.psize, self.psize, p=[i.fitness for i in self.individuals])
         parents = [self.individuals[i] for i in indexes]
         return parents
 
     def _tournment(self):
-        return None
+        winners = []
+        for i in range(self.psize):
+            gladiators = random.sample(self.individuals, self.tsize)
+            winners.append(sorted(gladiators, key=lambda ind: ind.fitness, reverse=True)[0])
+        return winners
 
     def _plot(self):
         ''' Fig 1 - Fitness '''
