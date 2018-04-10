@@ -4,7 +4,6 @@ import random
 import time
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.interpolate import spline
 from individual import Individual
 
 class Population():
@@ -30,17 +29,11 @@ class Population():
         self.tsize = tsize
 
     def _diversity(self):
-        centroid = [(np.sum((self.individuals[i].chromosome[j]) for i in range(self.psize)) / self.psize) for j in range(self.csize)]
-        diversity = [(np.sum(((self.individuals[i].chromosome[j] - centroid[j])**2) for i in range(self.psize))) for j in range(self.csize)]
-        self.diversity.append(np.sum(diversity))
-        return self._normalize(np.sum(diversity))
-
-    def _normalize(self, value):
-        if (self.max_diversity):
-            return (value / self.max_diversity)
-        else:
-            self.max_diversity = value
-            return 1
+        ''' tks @markx3 '''
+        chromos = np.array([ind.chromosome for ind in self.individuals])
+        ci = np.sum(chromos, axis=0) / self.psize
+        div = np.sum((chromos - ci) ** 2)
+        self.diversity.append(div)
 
     def evolve(self):
         generation = 0
@@ -82,7 +75,7 @@ class Population():
             mates += 1
         father, mother = None, None
         while (mates <= self.psize - 1):
-            ctax = np.random.RandomState().uniform(0, 1)
+            ctax = np.random.uniform(0, 1)
             individual = parents[np.random.randint(self.psize)]
             if (ctax > self.ctax):
                 self.individuals[mates].chromosome = individual.chromosome
@@ -124,27 +117,16 @@ class Population():
         ''' Fig 1 - Fitness '''
         plt.figure(1)
         plt.plot(self.best_fit_plt)
-        # best_x = np.linspace(0, self.generations - 1, self.generations * 10)
-        # best_y = spline(range(self.generations), self.best_fit_plt, best_x)
-        # plt.plot(best_x, best_y)
 
         plt.plot(self.mean_fit_plt)
-        # mean_x = np.linspace(0, self.generations - 1, self.generations * 3)
-        # mean_y = spline(range(self.generations), self.mean_fit_plt, mean_x)
-        # plt.plot(mean_x, mean_y)
         plt.legend(['best', 'mean'])
         plt.ylabel('fitness')
         plt.xlabel('generation')
-
 
         ''' Fig 2 - Diversidade '''
         plt.figure(2)
         self.diversity = [(float(x) / max(self.diversity)) for x in self.diversity]
         plt.plot(self.diversity)
-        # div_x = np.linspace(0, self.generations - 1, self.generations * 10)
-        # div_y = spline(range(self.generations), self.diversity, div_x)
-        # plt.plot(div_x, div_y)
-
         plt.ylabel('diversity')
         plt.xlabel('generation')
 
@@ -152,7 +134,9 @@ class Population():
 
     def get_best_result(self):
         best = sorted(self.individuals, key=lambda i: i.fitness, reverse=True)[0]
-        print ('Best individual: {}'.format(best.get_result()))
+        if (hasattr(best, 'num_genes')):
+            if (best.num_genes):
+                print ('Best individual: {}'.format(best.get_result())) 
 
     def __str__(self):
         strn = ''

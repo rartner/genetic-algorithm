@@ -27,9 +27,9 @@ class Individual_Int:
 
     def mutate(self, mtax):
             for gene in range(self.size):
-                prob = np.random.RandomState().uniform(0, 1)
+                prob = np.random.uniform(0, 1)
                 if (prob < mtax):
-                    self.chromosome[gene] = np.random.RandomState().randint(self.min_bound, self.max_bound)
+                    self.chromosome[gene] = np.random.randint(self.min_bound, self.max_bound)
 
     def mate(self, mother):
         if (self.uniform_c):

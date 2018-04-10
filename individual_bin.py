@@ -6,9 +6,9 @@ class Individual_Bin:
 
     def __init__(self, size):
         self.size = size
-        self.uniform_c = True # Uniform crossover
-        self.cpoints = 2      # Crossover points
-        self.rproblem = True
+        self.uniform_c = False # Uniform crossover
+        self.cpoints = 1      # Crossover points
+        self.rproblem = False
         self.chromosome = self.__init_chromosome(size)
 
     def __init_chromosome(self, size):
@@ -34,7 +34,7 @@ class Individual_Bin:
 
     def mutate(self, mtax):
         for gene in range(self.size):
-            prob = np.random.RandomState().uniform(0, 1)
+            prob = np.random.uniform(0, 1)
             if (prob < mtax):
                 self.chromosome[gene] = 0 if self.chromosome[gene] == 1 else 1
 
@@ -89,7 +89,7 @@ class Individual_Bin:
         for gene in np.split(self.chromosome, self.num_genes):
             genes.append(''.join(map(str, gene)))
         genes = self.decode(genes)
-        fo = float((30*genes[0] + 40*genes[1]) / 1040)
+        fo = float((30*genes[0] + 40*genes[1]) / 1360)
         h = max(0, (genes[0] + 2*genes[1] - 40) / 16)
         self.fitness = fo - h
 

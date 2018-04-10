@@ -7,7 +7,6 @@ Genetic algorithm @ OCEV/UDESC
 ``` bash
 > pip3 install numpy
 > pip3 install matplotlib
-> pip3 install scipy
 > apt install python3-tk
 ```
 
@@ -15,4 +14,5 @@ Genetic algorithm @ OCEV/UDESC
 
 ``` bash
 > python ga.py -h
+
 ```
