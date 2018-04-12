@@ -6,7 +6,7 @@ class Individual_Bin:
 
     def __init__(self, size):
         self.size = size
-        self.uniform_c = False # Uniform crossover
+        self.uniform_c = True # Uniform crossover
         self.cpoints = 1      # Crossover points
         self.rproblem = False
         self.chromosome = self.__init_chromosome(size)
