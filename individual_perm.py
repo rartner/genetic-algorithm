@@ -1,17 +1,25 @@
+'''
+Melhor indivíduo para o TSP: [7 3 9 4 8 5 1 2 0 6]/[6 0 2 1 5 8 4 9 3 7]
+Fitness: 97.54321473487441. Distância: ~~ 2.46
+15k gerações / 5k gerações (às vezes)
+'''
 import time
 import copy
 import math
 import numpy as np
+from scipy.spatial import distance
 
 class Individual_Perm:
     def __init__(self, size):
         self.size = size
         self.chromosome = self.__init_chromosome(size)
+        self.tsp = False
+        self.distances = [(0.0, 0.2), (0.15, 0.8), (0.2, 0.65), (0.9, 0.3), (0.75, 0.45), (0.3, 0.75), (0.05, 0.05), (0.95, 0.95), (0.55, 0.55), (0.85, 0.25)]
 
     def __init_chromosome(self, size):
         return np.random.permutation(size)
 
-    def eval_fitness(self):
+    def _eval_fitness(self):
         fitness_value = 0
         for gene in range(self.size - 1):
             if self.chromosome[gene] % 2 == 0:
@@ -21,6 +29,13 @@ class Individual_Perm:
                 if self.chromosome[gene + 1] % 2 == 0:
                     fitness_value += 1
         self.fitness = fitness_value
+
+    def eval_fitness(self):
+        soma = 0.0
+        for i in range(1, self.size):
+            p1, p2 = self.distances[self.chromosome[i-1]], self.distances[self.chromosome[i]],
+            soma += distance.euclidean(p1, p2)
+        self.fitness = abs(100 - soma)
 
     def mutate(self, mtax):
         for gene in range(self.size):

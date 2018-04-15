@@ -136,9 +136,12 @@ class Population():
 
     def get_best_result(self):
         best = sorted(self.individuals, key=lambda i: i.fitness, reverse=True)[0]
+        best.eval_fitness()
         if (hasattr(best, 'num_genes')):
             if (best.num_genes):
-                print ('Best individual: {}'.format(best.get_result()))
+                print ('\nBest individual: {}'.format(best.get_result()))
+        else:
+            print ('\nBest individual: {}. Fitness: {}'.format(str(best), best.fitness))
 
     def __str__(self):
         strn = ''
