@@ -1,3 +1,5 @@
+import time
+import copy
 import math
 import numpy as np
 
@@ -45,7 +47,30 @@ class Individual_Perm:
         return childs
 
     def _pmx(self, c1, c2, idx1, idx2):
-        print ('oi')
+        slice_1, slice_2 = c1[idx1:idx2], c2[idx1:idx2]
+        for i in range(len(c1)):
+            if (i < idx1 or i >= idx2):
+                wait = True
+                while (wait):
+                    if (c1[i] in slice_1):
+                        pos = list(slice_1).index(c1[i])
+                        c1[i] = slice_2[pos]
+                    if ((c1 == c1[i]).sum() > 1):
+                        wait = True
+                    else:
+                        wait = False
+        for i in range(len(c2)):
+            if (i < idx1 or i >= idx2):
+                wait = True
+                while (wait):
+                    if (c2[i] in slice_2):
+                        pos = list(slice_2).index(c2[i])
+                        c2[i] = slice_1[pos]
+                    if ((c2 == c2[i]).sum() > 1):
+                        wait = True
+                    else:
+                        wait = False
+        return c1, c2
 
     def __str__(self):
         return np.array2string(self.chromosome)
