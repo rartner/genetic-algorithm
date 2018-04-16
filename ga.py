@@ -43,9 +43,7 @@ def main():
                      args.bin,
                      args.el,
                      tsize=args.tsize)
-    print ('first population:\n{}'.format(str(pop)))
     pop.evolve()
-    print ('last population:\n{}'.format(str(pop)))
 
 if __name__ == '__main__':
     main()

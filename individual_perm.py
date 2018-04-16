@@ -14,10 +14,18 @@ class Individual_Perm:
         self.size = size
         self.chromosome = self.__init_chromosome(size)
         self.tsp = False
-        self.distances = [(0.0, 0.2), (0.15, 0.8), (0.2, 0.65), (0.9, 0.3), (0.75, 0.45), (0.3, 0.75), (0.05, 0.05), (0.95, 0.95), (0.55, 0.55), (0.85, 0.25)]
+        self.points = [(0.0, 0.2), (0.15, 0.8), (0.2, 0.65), (0.9, 0.3), (0.75, 0.45), (0.3, 0.75), (0.05, 0.05), (0.95, 0.95), (0.55, 0.55), (0.85, 0.25)]
+        self.distances = self._get_distances()
 
     def __init_chromosome(self, size):
         return np.random.permutation(size)
+
+    def _get_distances(self):
+        distances = np.zeros((len(self.points), len(self.points)), dtype=np.float)
+        for y in range(len(self.points)):
+            for x in range(len(self.points)):
+                distances[y, x] = distance.euclidean(self.points[y], self.points[x])
+        return distances
 
     def _eval_fitness(self):
         fitness_value = 0
@@ -33,8 +41,8 @@ class Individual_Perm:
     def eval_fitness(self):
         soma = 0.0
         for i in range(1, self.size):
-            p1, p2 = self.distances[self.chromosome[i-1]], self.distances[self.chromosome[i]],
-            soma += distance.euclidean(p1, p2)
+            p1, p2 = self.chromosome[i-1], self.chromosome[i],
+            soma += self.distances[p2, p1]
         self.fitness = abs(100 - soma)
 
     def mutate(self, mtax):

@@ -36,6 +36,7 @@ class Population():
         self.diversity.append(div)
 
     def evolve(self):
+        print ('First population:\n{}'.format(self.__str__()))
         generation = 0
         while(generation < self.generations):
             parents = self._select()
@@ -43,6 +44,7 @@ class Population():
             self._mutate()
             self._diversity()
             generation += 1
+        print ('Last population:\n{}'.format(self.__str__()))
         self._plot()
         self.get_best_result()
 
