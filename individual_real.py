@@ -1,6 +1,7 @@
 import math
-from random import gauss
 import numpy as np
+from copy import deepcopy
+from random import gauss
 
 class Individual_Real:
     def __init__(self, size, min_bound, max_bound):
@@ -8,6 +9,7 @@ class Individual_Real:
         self.min_bound = min_bound
         self.max_bound = max_bound
         self.is_bin = False
+        self.avg = True
         self.chromosome = self.__init_chromosome(size, min_bound, max_bound)
 
     def _decode(self, genes):
@@ -46,6 +48,30 @@ class Individual_Real:
             self._fitness(self._decode_genes())
         else:
             self._fitness(self.chromosome)
+
+    def mate(self, mother):
+        if (self.avg):
+            return self._avg(mother)
+        return self._avg(mother)
+
+    def _avg(self, mother):
+        childs = [deepcopy(self.chromosome), deepcopy(mother.chromosome)]
+        average = np.sum(np.array([self.chromosome, mother.chromosome]), axis=0) / 2
+        for i in range(self.size):
+            parent = np.random.randint(2)
+            childs[parent][i] = average[i]
+        return childs
+
+    def _mutate(self, mtax):
+        for gene in range(self.size):
+            prob = np.random.uniform(0, 1)
+            if (prob < mtax):
+                value = np.random.uniform(self.min_bound, self.max_bound) / 10
+                if (np.random.randint(2) == 0):
+                    self.chromosome[gene] += value
+                else:
+                    self.chromosome[gene] -= value
+
 
     def mutate(self, mtax):
         for gene in range(self.size):
