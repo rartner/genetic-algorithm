@@ -1,6 +1,6 @@
 '''
-Melhor indivíduo para o TSP: [7 3 9 4 8 5 1 2 0 6]/[6 0 2 1 5 8 4 9 3 7]
-Fitness: 97.54321473487441. Distância: ~~ 2.46
+Melhor indivíduo para o TSP: [1 2 0 6 9 3 4 7 8 5]
+Fitness: 96.50139350575246. Distância: ~~ 3.49
 15k gerações / 5k gerações (às vezes)
 '''
 import time
@@ -40,8 +40,11 @@ class Individual_Perm:
 
     def eval_fitness(self):
         soma = 0.0
-        for i in range(1, self.size):
-            p1, p2 = self.chromosome[i-1], self.chromosome[i],
+        for i in range(1, self.size + 1):
+            if (i == self.size):
+                p1, p2 = self.chromosome[0], self.chromosome[i-1]
+            else:
+                p1, p2 = self.chromosome[i-1], self.chromosome[i]
             soma += self.distances[p2, p1]
         self.fitness = abs(100 - soma)
 

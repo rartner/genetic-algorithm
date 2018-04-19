@@ -39,10 +39,10 @@ class Population():
         print ('First population:\n{}'.format(self.__str__()))
         generation = 0
         while(generation < self.generations):
+            self._diversity()
             parents = self._select()
             self._crossover(parents)
             self._mutate()
-            self._diversity()
             generation += 1
         print ('Last population:\n{}'.format(self.__str__()))
         self._plot()

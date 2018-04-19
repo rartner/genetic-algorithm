@@ -1,4 +1,5 @@
 import math
+from random import gauss
 import numpy as np
 
 class Individual_Real:
@@ -6,7 +7,7 @@ class Individual_Real:
         self.size = size
         self.min_bound = min_bound
         self.max_bound = max_bound
-        self.is_bin = True
+        self.is_bin = False
         self.chromosome = self.__init_chromosome(size, min_bound, max_bound)
 
     def _decode(self, genes):
@@ -40,11 +41,22 @@ class Individual_Real:
     def sigmoid(self, value):
         return 1.0 / (1 + math.exp(-value))
 
-    def fitness(self):
+    def eval_fitness(self):
         if self.is_bin:
-            return self._fitness(self._decode_genes())
+            self._fitness(self._decode_genes())
         else:
-            return self._fitness(self.chromosome)
+            self._fitness(self.chromosome)
+
+    def mutate(self, mtax):
+        for gene in range(self.size):
+            prob = np.random.uniform(0, 1)
+            if (prob < mtax):
+                value = gauss(self.chromosome[gene], 1)
+                if (value < self.min_bound):
+                    value = self.min_bound
+                if (value > self.max_bound):
+                    value = self.max_bound
+                self.chromosome[gene] = value
 
     ''' Ackley's function'''
     def _fitness(self, values):
@@ -54,7 +66,7 @@ class Individual_Real:
     		first_sum += gene ** 2.0
     		second_sum += math.cos(2.0 * math.pi * gene)
     	n = float(self.size)
-    	return -20.0*math.exp(-0.2*math.sqrt(first_sum/n)) - math.exp(second_sum/n) + 20 + math.e
+    	self.fitness = -20.0*math.exp(-0.2*math.sqrt(first_sum/n)) - math.exp(second_sum/n) + 20 + math.e
 
     def __str__(self):
         return np.array2string(self.chromosome)
