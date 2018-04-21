@@ -118,11 +118,9 @@ class Population():
     def _plot(self):
         ''' Fig 1 - Fitness '''
         plt.figure(1)
-        best = self.csize - 1
-        plt.plot([(float(i) / best) for i in self.best_fit_plt])
+        plt.plot(self.best_fit_plt)
 
-        # plt.plot([self.mean_fit_plt)
-        plt.plot([(float(i) / best) for i in self.mean_fit_plt])
+        plt.plot(self.mean_fit_plt)
         plt.legend(['best', 'mean'])
         plt.ylabel('fitness')
         plt.xlabel('generation')

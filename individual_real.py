@@ -9,7 +9,7 @@ class Individual_Real:
         self.min_bound = min_bound
         self.max_bound = max_bound
         self.is_bin = False
-        self.avg = True
+        self.tcrossover = 'art'
         self.chromosome = self.__init_chromosome(size, min_bound, max_bound)
 
     def _decode(self, genes):
@@ -50,11 +50,15 @@ class Individual_Real:
             self._fitness(self.chromosome)
 
     def mate(self, mother):
-        if (self.avg):
+        if (self.tcrossover == 'avg'):
             return self._avg(mother)
-        return self._avg(mother)
+        elif (self.tcrossover == 'blx'):
+            return self._blx(mother)
+        else:
+            return self._art(mother)
 
     def _avg(self, mother):
+        ''' uniform average '''
         childs = [deepcopy(self.chromosome), deepcopy(mother.chromosome)]
         average = np.sum(np.array([self.chromosome, mother.chromosome]), axis=0) / 2
         for i in range(self.size):
@@ -62,7 +66,24 @@ class Individual_Real:
             childs[parent][i] = average[i]
         return childs
 
+    def _blx(self, mother):
+        ''' blend crossover '''
+        childs = [deepcopy(self.chromosome), deepcopy(mother.chromosome)]
+        cross_dif = abs(childs[0] - childs[1])
+        childs[0] = self.chromosome - (np.random.uniform(0,1) * cross_dif)
+        childs[1] = mother.chromosome + (np.random.uniform(0,1) * cross_dif)
+        return childs
+
+    def _art(self, mother):
+        ''' arithmetic crossover '''
+        childs = [deepcopy(self.chromosome), deepcopy(mother.chromosome)]
+        alpha = np.random.uniform(0, 1)
+        childs[0] = (alpha * childs[0]) + ((1 - alpha) * childs[1])
+        childs[1] = ((1 - alpha) * childs[0]) + (alpha * childs[1])
+        return childs
+
     def _mutate(self, mtax):
+        ''' delta mutation '''
         for gene in range(self.size):
             prob = np.random.uniform(0, 1)
             if (prob < mtax):
@@ -74,6 +95,7 @@ class Individual_Real:
 
 
     def mutate(self, mtax):
+        ''' gaussian mutation '''
         for gene in range(self.size):
             prob = np.random.uniform(0, 1)
             if (prob < mtax):
