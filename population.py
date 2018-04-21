@@ -44,7 +44,7 @@ class Population():
             self._crossover(parents)
             self._mutate()
             generation += 1
-        print ('Last population:\n{}'.format(self.__str__()))
+        print ('=====================\nLast population:\n{}'.format(self.__str__()))
         self._plot()
         self.get_best_result()
 
@@ -139,9 +139,9 @@ class Population():
         best.eval_fitness()
         if (hasattr(best, 'num_genes')):
             if (best.num_genes):
-                print ('\nBest individual: {}'.format(best.get_result()))
+                print ('Best individual: {}'.format(best.get_result()))
         else:
-            print ('\nBest individual: {}. Fitness: {}'.format(str(best), best.fitness))
+            print ('=====================\nBest individual:\n{}. \nFitness: {}'.format(str(best), best.fitness))
 
     def __str__(self):
         strn = ''
