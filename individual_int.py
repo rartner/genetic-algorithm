@@ -7,8 +7,7 @@ class Individual_Int:
         self.size = size
         self.min_bound = min_bound
         self.max_bound = max_bound
-        self.uniform_c = False # Uniform crossover
-        self.cpoints = 2       # Crossover points
+        self.crossover = 'un'
         self.chromosome = self.__init_chromosome(size, min_bound, max_bound)
 
     def __init_chromosome(self, size, min_bound, max_bound):
@@ -32,13 +31,12 @@ class Individual_Int:
                     self.chromosome[gene] = np.random.randint(self.min_bound, self.max_bound)
 
     def mate(self, mother):
-        if (self.uniform_c):
-            return self._uniform(mother)
+        if (self.crossover == 'op'):
+            return self._one_point(mother)
+        elif (self.crossover == 'tp'):
+            return self._two_points(mother)
         else:
-            if (self.cpoints == 1):
-                return self._one_point(mother)
-            else:
-                return self._two_points(mother)
+            return self._uniform(mother)
 
     def _uniform(self, mother):
         childs = [[], []]

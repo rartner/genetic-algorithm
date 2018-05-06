@@ -27,6 +27,8 @@ class Population():
         self.is_bin = is_bin
         self.has_elitism = el
         self.tsize = tsize
+        self.div = []
+        self.avg = []
 
     def _diversity(self):
         ''' tks @markx3 '''
@@ -36,17 +38,23 @@ class Population():
         self.diversity.append(div)
 
     def evolve(self):
-        print ('First population:\n{}'.format(self.__str__()))
-        generation = 0
-        while(generation < self.generations):
-            self._diversity()
-            parents = self._select()
-            self._crossover(parents)
-            self._mutate()
-            generation += 1
-        print ('=====================\nLast population:\n{}'.format(self.__str__()))
-        self._plot()
+        # print ('First population:\n{}'.format(self.__str__()))
+        for i in range(10):
+            generation = 0
+            while(generation < self.generations):
+                self._diversity()
+                parents = self._select()
+                self._crossover(parents)
+                self._mutate()
+                generation += 1
+            self.div.append(self.diversity)
+            self.avg.append(self.mean_fit_plt)
+            self.diversity = []
+            self.mean_fit_plt = []
+            self.best_fit_plt = []
+        # print ('=====================\nLast population:\n{}'.format(self.__str__()))
         self.get_best_result()
+        self._plot()
 
     def _select(self):
         ''' get the best individual in the generation '''
@@ -118,17 +126,24 @@ class Population():
     def _plot(self):
         ''' Fig 1 - Fitness '''
         plt.figure(1)
-        plt.plot(self.best_fit_plt)
-
-        plt.plot(self.mean_fit_plt)
-        plt.legend(['best', 'mean'])
+        avg = np.sum(self.avg, axis=0) / len(self.avg)
+        plt.plot(list(avg))
         plt.ylabel('fitness')
         plt.xlabel('generation')
+        # plt.plot(self.best_fit_plt)
+
+        # plt.plot(self.mean_fit_plt)
+        # plt.figure(2)
+        # plt.plot(list(np.std(self.avg, axis=0)))
+        # plt.ylabel('std deviation')
+        # plt.xlabel('generation')
+        # plt.legend(['best', 'avg'])
 
         ''' Fig 2 - Diversidade '''
-        plt.figure(2)
-        self.diversity = [(float(x) / max(self.diversity)) for x in self.diversity]
-        plt.plot(self.diversity)
+        plt.figure(3)
+        plt.plot(list(np.sum(self.div, axis=0) / len(self.div)))
+        # self.diversity = [(float(x) / max(self.diversity)) for x in self.diversity]
+        # plt.plot(self.diversity)
         plt.ylabel('diversity')
         plt.xlabel('generation')
 

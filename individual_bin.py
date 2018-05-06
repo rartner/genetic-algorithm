@@ -6,7 +6,7 @@ class Individual_Bin:
 
     def __init__(self, size):
         self.size = size
-        self.crossover = 'op'
+        self.crossover = 'tp'
         self.problem = 'ackley'
         self.chromosome = self.__init_chromosome(size)
 
@@ -15,7 +15,7 @@ class Individual_Bin:
             self.gene_size = 5
             self.num_genes = 2
         elif (self.problem == 'ackley'):
-            self.gene_size = 13
+            self.gene_size = 12
             self.num_genes = 2
             self.lb_domain = -32
             self.ub_domain = 32

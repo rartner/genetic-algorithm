@@ -6,6 +6,7 @@ Fitness: 96.50139350575246. Distância: ~~ 3.49
 import time
 import copy
 import math
+from random import uniform
 import numpy as np
 from scipy.spatial import distance
 
@@ -13,7 +14,7 @@ class Individual_Perm:
     def __init__(self, size):
         self.size = size
         self.chromosome = self.__init_chromosome(size)
-        self.tsp = False
+        self.problem = 'qp'
         self.points = [(0.0, 0.2), (0.15, 0.8), (0.2, 0.65), (0.9, 0.3), (0.75, 0.45), (0.3, 0.75), (0.05, 0.05), (0.95, 0.95), (0.55, 0.55), (0.85, 0.25)]
         self.distances = self._get_distances()
 
@@ -27,18 +28,18 @@ class Individual_Perm:
                 distances[y, x] = distance.euclidean(self.points[y], self.points[x])
         return distances
 
-    def _eval_fitness(self):
-        fitness_value = 0
-        for gene in range(self.size - 1):
-            if self.chromosome[gene] % 2 == 0:
-                if self.chromosome[gene + 1] % 2 == 1:
-                    fitness_value += 1
-            else:
-                if self.chromosome[gene + 1] % 2 == 0:
-                    fitness_value += 1
-        self.fitness = fitness_value
+    def _fitness_qp(self):
+        clashes = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                if (i != j):
+                    dx = abs(i-j)
+                    dy = abs(self.chromosome[i] - self.chromosome[j])
+                    if(dx == dy):
+                        clashes += 1
+        self.fitness = (self.size ** 2) - clashes
 
-    def eval_fitness(self):
+    def _fitness_tsp(self):
         soma = 0.0
         for i in range(1, self.size + 1):
             if (i == self.size):
@@ -47,6 +48,12 @@ class Individual_Perm:
                 p1, p2 = self.chromosome[i-1], self.chromosome[i]
             soma += self.distances[p2, p1]
         self.fitness = abs(100 - soma)
+
+    def eval_fitness(self):
+        if (self.problem == 'qp'):
+            self._fitness_qp()
+        else:
+            self._fitness_tsp()
 
     def mutate(self, mtax):
         for gene in range(self.size):
