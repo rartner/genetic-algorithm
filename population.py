@@ -1,9 +1,9 @@
-import copy
 import math
 import random
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+from copy import deepcopy
 from individual import Individual
 
 class Population():
@@ -11,6 +11,7 @@ class Population():
     best_fit_plt    = []
     mean_fit_plt    = []
     diversity       = []
+    coeficient      = 1.2
     max_diversity   = None
     best_individual = None
 
@@ -27,6 +28,7 @@ class Population():
         self.is_bin = is_bin
         self.has_elitism = el
         self.tsize = tsize
+        self.adjustment = 0.8 / float(generations)
         self.div = []
         self.avg = []
 
@@ -39,19 +41,19 @@ class Population():
 
     def evolve(self):
         # print ('First population:\n{}'.format(self.__str__()))
-        for i in range(10):
-            generation = 0
-            while(generation < self.generations):
-                self._diversity()
-                parents = self._select()
-                self._crossover(parents)
-                self._mutate()
-                generation += 1
-            self.div.append(self.diversity)
-            self.avg.append(self.mean_fit_plt)
-            self.diversity = []
-            self.mean_fit_plt = []
-            self.best_fit_plt = []
+        # for i in range(10):
+        generation = 0
+        while(generation < self.generations):
+            self._diversity()
+            parents = self._select()
+            self._crossover(parents)
+            self._mutate()
+            generation += 1
+                # self.div.append(self.diversity)
+                # self.avg.append(self.mean_fit_plt)
+                # self.diversity = []
+                # self.mean_fit_plt = []
+                # self.best_fit_plt = []
         # print ('=====================\nLast population:\n{}'.format(self.__str__()))
         self.get_best_result()
         self._plot()
@@ -64,12 +66,13 @@ class Population():
             if (i.fitness > max_fitness):
                 max_fitness = i.fitness
                 if (self.best_individual == None):
-                    self.best_individual = i
+                    self.best_individual = deepcopy(i)
                 if (i.fitness > self.best_individual.fitness):
-                    self.best_individual = i
+                    self.best_individual = deepcopy(i)
         self.best_fit_plt += [max_fitness]
         sum_fitness = np.sum([i.fitness for i in self.individuals])
         self.mean_fit_plt += [float(sum_fitness) / self.psize]
+        self.linear_adjustment()
         for i in self.individuals:
             i.fitness = i.fitness / sum_fitness
         if (self.tsize != None):
@@ -80,7 +83,7 @@ class Population():
     def _crossover(self, parents):
         mates = 0
         if (self.has_elitism):
-            self.individuals[mates] = copy.deepcopy(self.best_individual)
+            self.individuals[mates] = deepcopy(self.best_individual)
             self.best_individual
             mates += 1
         father, mother = None, None
@@ -126,14 +129,14 @@ class Population():
     def _plot(self):
         ''' Fig 1 - Fitness '''
         plt.figure(1)
-        avg = np.sum(self.avg, axis=0) / len(self.avg)
-        plt.plot(list(avg))
         plt.ylabel('fitness')
         plt.xlabel('generation')
-        # plt.plot(self.best_fit_plt)
+        plt.plot(self.best_fit_plt)
+        plt.plot(self.mean_fit_plt)
 
-        # plt.plot(self.mean_fit_plt)
         # plt.figure(2)
+        # avg = np.sum(self.avg, axis=0) / len(self.avg)
+        # plt.plot(list(avg))
         # plt.plot(list(np.std(self.avg, axis=0)))
         # plt.ylabel('std deviation')
         # plt.xlabel('generation')
@@ -141,9 +144,9 @@ class Population():
 
         ''' Fig 2 - Diversidade '''
         plt.figure(3)
-        plt.plot(list(np.sum(self.div, axis=0) / len(self.div)))
-        # self.diversity = [(float(x) / max(self.diversity)) for x in self.diversity]
-        # plt.plot(self.diversity)
+        # plt.plot(list(np.sum(self.div, axis=0) / len(self.div)))
+        self.diversity = [(float(x) / max(self.diversity)) for x in self.diversity]
+        plt.plot(self.diversity)
         plt.ylabel('diversity')
         plt.xlabel('generation')
 
@@ -157,6 +160,19 @@ class Population():
                 print ('Best individual: {}'.format(best.get_result()))
         else:
             print ('=====================\nBest individual:\n{}. \nFitness: {}'.format(str(best), best.fitness))
+
+    def linear_adjustment(self):
+        sortd = sorted(self.individuals, key=lambda i: i.fitness)
+        fitness_min, fitness_max, fitness_avg = sortd[0].fitness, sortd[len(sortd)-1].fitness, np.average([i.fitness for i in self.individuals])
+        if (fitness_min > ((self.coeficient * fitness_avg) - fitness_max) / (self.coeficient - 1)):
+            alpha = (fitness_avg * (self.coeficient - 1)) / (fitness_max - fitness_avg)
+            beta = (fitness_avg * (fitness_max - self.coeficient*fitness_avg)) / (fitness_max - fitness_avg)
+        else:
+            alpha = fitness_avg / (fitness_avg - fitness_min)
+            beta = (-fitness_min  * fitness_avg) / (fitness_avg - fitness_min)
+        for individual in self.individuals:
+            individual.fitness = (alpha * individual.fitness) + beta
+        self.coeficient += self.adjustment
 
     def __str__(self):
         strn = ''
