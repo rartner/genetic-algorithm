@@ -56,7 +56,7 @@ class Population():
                 # self.best_fit_plt = []
         # print ('=====================\nLast population:\n{}'.format(self.__str__()))
         self.get_best_result()
-        self._plot()
+        # self._plot()
 
     def _select(self):
         ''' get the best individual in the generation '''
@@ -72,7 +72,7 @@ class Population():
         self.best_fit_plt += [max_fitness]
         sum_fitness = np.sum([i.fitness for i in self.individuals])
         self.mean_fit_plt += [float(sum_fitness) / self.psize]
-        self.linear_adjustment()
+        # self.linear_adjustment()
         for i in self.individuals:
             i.fitness = i.fitness / sum_fitness
         if (self.tsize != None):
@@ -160,6 +160,7 @@ class Population():
                 print ('Best individual: {}'.format(best.get_result()))
         else:
             print ('=====================\nBest individual:\n{}. \nFitness: {}'.format(str(best), best.fitness))
+        print (best.get_lucro())
 
     def linear_adjustment(self):
         sortd = sorted(self.individuals, key=lambda i: i.fitness)
