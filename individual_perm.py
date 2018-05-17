@@ -52,7 +52,7 @@ class Individual_Perm:
                     dy = abs(self.chromosome[i] - self.chromosome[j])
                     if(dx == dy):
                         clashes += 1
-            d = (i + 1) + (self.chromosome[i] * self.size)
+            d = (i + 1) + ((self.chromosome[i] + 1) * self.size)
             if (i % 2 == 0):
                 d = math.sqrt(d)
             else:
