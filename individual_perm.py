@@ -60,17 +60,7 @@ class Individual_Perm:
             # c = max(0, d - (clashes * self.size))
             # c = max(0, d / max_weight - (clashes / self.size))
             weight += d
-        self.fitness = (weight / max_weight) - (clashes - (self.size ** 2))
-
-    def get_lucro(self):
-        lucro = 0
-        for i in range(self.size):
-            d = (i + 1) + (self.chromosome[i] * self.size)
-            if (i % 2 == 0):
-                lucro += math.sqrt(d)
-            else:
-                lucro += math.log10(d)
-        return (lucro)
+        self.fitness = ((weight / max_weight) - (clashes - (self.size ** 2)))
 
     def _fitness_tsp(self):
         soma = 0.0
@@ -137,6 +127,17 @@ class Individual_Perm:
                     else:
                         wait = False
         return c1, c2
+
+    def get_clashes(self):
+        clashes = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                if (i != j):
+                    dx = abs(i-j)
+                    dy = abs(self.chromosome[i] - self.chromosome[j])
+                    if(dx == dy):
+                        clashes += 1
+        return clashes
 
     def __str__(self):
         return np.array2string(self.chromosome)
