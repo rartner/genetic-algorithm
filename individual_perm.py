@@ -43,8 +43,12 @@ class Individual_Perm:
         clashes = 0
         weight = 0
         max_weight = 0
+        weight_diagonal = [(x + 1) + (x * self.size) for x in range(self.size)]
         for x in range(self.size):
-            max_weight += math.sqrt((self.size ** 2) - self.size - x)
+            if (x % 2 == 0):
+                max_weight += math.sqrt(weight_diagonal[x])
+            else:
+                max_weight += math.log10(weight_diagonal[x])
         for i in range(self.size):
             for j in range(self.size):
                 if (i != j):
@@ -52,15 +56,14 @@ class Individual_Perm:
                     dy = abs(self.chromosome[i] - self.chromosome[j])
                     if(dx == dy):
                         clashes += 1
-            d = (i + 1) + ((self.chromosome[i] + 1) * self.size)
+            gain = (self.chromosome[i] + 1) + (i * self.size)
             if (i % 2 == 0):
-                d = math.sqrt(d)
+                gain = math.sqrt(gain)
             else:
-                d = math.log10(d)
-            # c = max(0, d - (clashes * self.size))
-            # c = max(0, d / max_weight - (clashes / self.size))
-            weight += d
-        self.fitness = ((weight / max_weight) - (clashes - (self.size ** 2)))
+                gain = math.log10(gain)
+            weight += gain
+        penalty = 1 - clashes / ((self.size - 1) ** 2)
+        self.fitness = ((weight / max_weight) * penalty)
 
     def _fitness_tsp(self):
         soma = 0.0
@@ -130,6 +133,7 @@ class Individual_Perm:
 
     def get_clashes(self):
         clashes = 0
+        gain = 0
         for i in range(self.size):
             for j in range(self.size):
                 if (i != j):
@@ -137,6 +141,8 @@ class Individual_Perm:
                     dy = abs(self.chromosome[i] - self.chromosome[j])
                     if(dx == dy):
                         clashes += 1
+            gain += (self.chromosome[i] + 1) + (i * self.size)
+        print ('Gain: ', gain)
         return clashes
 
     def __str__(self):

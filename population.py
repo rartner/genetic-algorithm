@@ -161,7 +161,7 @@ class Population():
         else:
             print ('=====================\nBest individual:\n{}. \nFitness: {}'.format(str(best), best.fitness))
             if (best.problem == 'qp'):
-                print ('Colisões: ', best.get_clashes())
+                print ('Clashes: ', best.get_clashes())
 
     def linear_adjustment(self):
         sortd = sorted(self.individuals, key=lambda i: i.fitness)
