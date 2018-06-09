@@ -79,7 +79,7 @@ class Individual_Real:
             first_sum += gene ** 2.0
             second_sum += math.cos(2.0 * math.pi * gene)
         n = float(self.size)
-        self.fitness = 32 - (-20.0*math.exp(-0.2*math.sqrt(first_sum/n)) - math.exp(second_sum/n) + 20 + math.e) # diminuindo o valor de 32 por ser minimização
+        self.fitness = 32 - (-20.0*math.exp(-0.2*math.sqrt(first_sum/n)) - math.exp(second_sum/n) + 20 + math.e)
 
     def __str__(self):
         return np.array2string(self.chromosome)

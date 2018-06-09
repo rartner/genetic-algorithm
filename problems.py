@@ -1,21 +1,28 @@
 """Collection of toy problems for testing the algorithm."""
+import fitness
 
-# TODO: create fitness functions lib
+# TODO: create fitness functions lib. use it
 
 queens = {
     "description": "queens problem considering variable weights",
     "encoding": "int-perm",
-    "fitness": None
+    "fitness": fitness.queens
 }
 
 ackley = {
     "description": "ackley functions for N dimensions",
     "encoding": "real",
-    "fitness": None
+    "fitness": fitness.ackley
 }
 
 ackley_bin = {
     "description": "ackley functions for N dimensions using bin encoding",
     "encoding": "bin",
-    "fitness": None
+    "fitness": None  # TODO
+}
+
+even_odd = {
+    "description": "even/odd alternance",
+    "encoding": "int",
+    "fitness": fitness.even_odd
 }
