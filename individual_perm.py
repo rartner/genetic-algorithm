@@ -40,16 +40,17 @@ class Individual_Perm:
         self.fitness = (self.size ** 2) - clashes
 
     def _fitness_qp_weighted(self):
+        """Function for evaluating the individual's fitness."""
         clashes = 0
         weight = 0
         max_weight = 0
         weight_diagonal = [(x + 1) + (x * self.size) for x in range(self.size)]
-        for x in range(self.size):
-            if (x % 2 == 0):
-                max_weight += math.sqrt(weight_diagonal[x])
-            else:
-                max_weight += math.log10(weight_diagonal[x])
         for i in range(self.size):
+            if (i % 2 == 0):
+                max_weight += math.sqrt(weight_diagonal[i])
+            else:
+                max_weight += math.log10(weight_diagonal[i])
+
             for j in range(self.size):
                 if (i != j):
                     dx = abs(i-j)
@@ -62,7 +63,7 @@ class Individual_Perm:
             else:
                 gain = math.log10(gain)
             weight += gain
-        penalty = 1 - clashes / ((self.size - 1) ** 2)
+        penalty = 1 - clashes / ((self.size) ** 2)
         self.fitness = ((weight / max_weight) * penalty)
 
     def _fitness_tsp(self):
@@ -132,6 +133,13 @@ class Individual_Perm:
         return c1, c2
 
     def get_clashes(self):
+        """Best individual.
+
+        [6 2 7 1 4 0 5 3].
+        Fitness: 1.0827202532483369
+        Gain:  26.823263695511123
+        Clashes:  0
+        """
         clashes = 0
         gain = 0
         for i in range(self.size):
@@ -141,7 +149,10 @@ class Individual_Perm:
                     dy = abs(self.chromosome[i] - self.chromosome[j])
                     if(dx == dy):
                         clashes += 1
-            gain += (self.chromosome[i] + 1) + (i * self.size)
+            if (i % 2 == 0):
+                gain += math.sqrt((self.chromosome[i] + 1) + (i * self.size))
+            else:
+                gain += math.log10((self.chromosome[i] + 1) + (i * self.size))
         print ('Gain: ', gain)
         return clashes
 
