@@ -28,7 +28,7 @@ class Population():
         self.is_bin = is_bin
         self.has_elitism = el
         self.tsize = tsize
-        self.adjustment = 0.8 / float(generations)
+        self.adjustment = 0.8 / float(generations * 0.8)
         self.div = []
         self.avg = []
 
@@ -40,8 +40,6 @@ class Population():
         self.diversity.append(div)
 
     def evolve(self):
-        # print ('First population:\n{}'.format(self.__str__()))
-        # for i in range(10):
         generation = 0
         while(generation < self.generations):
             self._diversity()
@@ -59,23 +57,19 @@ class Population():
         self._plot()
 
     def _select(self):
-        ''' get the best individual in the generation '''
         max_fitness = 0.0
         for i in self.individuals:
             i.eval_fitness()
             if (i.fitness > max_fitness):
                 max_fitness = i.fitness
-                if (self.best_individual == None):
+                if self.best_individual is None:
                     self.best_individual = deepcopy(i)
                 if (i.fitness > self.best_individual.fitness):
                     self.best_individual = deepcopy(i)
         self.best_fit_plt += [max_fitness]
         sum_fitness = np.sum([i.fitness for i in self.individuals])
         self.mean_fit_plt += [float(sum_fitness) / self.psize]
-        # self.linear_adjustment()
-        for i in self.individuals:
-            i.fitness = i.fitness / sum_fitness
-        if (self.tsize != None):
+        if self.tsize is not None:
             return self._tournment()
         else:
             return self._roulette()
@@ -94,7 +88,7 @@ class Population():
                 self.individuals[mates].chromosome = individual.chromosome
                 mates += 1
             else:
-                if (father == None):
+                if father is None:
                     father = individual
                 else:
                     mother = individual
@@ -115,15 +109,23 @@ class Population():
                 self.individuals[i].mutate(self.mtax)
 
     def _roulette(self):
-        indexes = np.random.choice(self.psize, self.psize, p=[i.fitness for i in self.individuals])
+        """Roulette-based selector."""
+        self.linear_adjustment()
+
+        list_fitness = [i.fitness for i in self.individuals]
+        sum_fitness = np.sum(list_fitness)
+        list_fitness = list_fitness / sum_fitness
+        indexes = np.random.choice(self.psize, self.psize, p=list_fitness)
         parents = [self.individuals[i] for i in indexes]
         return parents
 
     def _tournment(self):
+        """Tournment selector."""
         winners = []
         for i in range(self.psize):
             gladiators = random.sample(self.individuals, self.tsize)
-            winners.append(sorted(gladiators, key=lambda ind: ind.fitness, reverse=True)[0])
+            sorted_gladiators = sorted(gladiators, key=lambda ind: ind.fitness)
+            winners.append(sorted_gladiators[len(gladiators) - 1])
         return winners
 
     def _plot(self):
@@ -165,16 +167,19 @@ class Population():
 
     def linear_adjustment(self):
         sortd = sorted(self.individuals, key=lambda i: i.fitness)
-        fitness_min, fitness_max, fitness_avg = sortd[0].fitness, sortd[len(sortd)-1].fitness, np.average([i.fitness for i in self.individuals])
+        fitness_min = sortd[0].fitness
+        fitness_max = sortd[len(sortd)-1].fitness
+        fitness_avg = np.average([i.fitness for i in self.individuals])
         if (fitness_min > ((self.coeficient * fitness_avg) - fitness_max) / (self.coeficient - 1)):
             alpha = (fitness_avg * (self.coeficient - 1)) / (fitness_max - fitness_avg)
-            beta = (fitness_avg * (fitness_max - self.coeficient*fitness_avg)) / (fitness_max - fitness_avg)
+            beta = (fitness_avg * (fitness_max - self.coeficient * fitness_avg)) / (fitness_max - fitness_avg)
         else:
             alpha = fitness_avg / (fitness_avg - fitness_min)
             beta = (-fitness_min  * fitness_avg) / (fitness_avg - fitness_min)
         for individual in self.individuals:
-            individual.fitness = (alpha * individual.fitness) + beta
-        self.coeficient += self.adjustment
+            individual.fitness = max(0, (alpha * individual.fitness) + beta)
+        if (self.coeficient <= 2.00):
+            self.coeficient += self.adjustment
 
     def __str__(self):
         strn = ''
