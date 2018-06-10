@@ -3,9 +3,10 @@ Melhor indivíduo para o TSP: [1 2 0 6 9 3 4 7 8 5]
 Fitness: 96.50139350575246. Distância: ~~ 3.49
 15k gerações / 5k gerações (às vezes)
 '''
-import time
 import copy
+import fitness
 import math
+import time
 from random import uniform
 import numpy as np
 from scipy.spatial import distance
@@ -41,30 +42,7 @@ class Individual_Perm:
 
     def _fitness_qp_weighted(self):
         """Function for evaluating the individual's fitness."""
-        clashes = 0
-        weight = 0
-        max_weight = 0
-        weight_diagonal = [(x + 1) + (x * self.size) for x in range(self.size)]
-        for i in range(self.size):
-            if (i % 2 == 0):
-                max_weight += math.sqrt(weight_diagonal[i])
-            else:
-                max_weight += math.log10(weight_diagonal[i])
-
-            for j in range(self.size):
-                if (i != j):
-                    dx = abs(i-j)
-                    dy = abs(self.chromosome[i] - self.chromosome[j])
-                    if(dx == dy):
-                        clashes += 1
-            gain = (self.chromosome[i] + 1) + (i * self.size)
-            if (i % 2 == 0):
-                gain = math.sqrt(gain)
-            else:
-                gain = math.log10(gain)
-            weight += gain
-        penalty = 1 - clashes / ((self.size) ** 2)
-        self.fitness = ((weight / max_weight) * penalty)
+        self.fitness = fitness.queens(self.size, self.chromosome)
 
     def _fitness_tsp(self):
         soma = 0.0
