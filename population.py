@@ -40,19 +40,21 @@ class Population():
         self.diversity.append(div)
 
     def evolve(self):
-        generation = 0
-        while(generation < self.generations):
-            self._diversity()
-            parents = self._select()
-            self._crossover(parents)
-            self._mutate()
-            generation += 1
-                # self.div.append(self.diversity)
-                # self.avg.append(self.mean_fit_plt)
-                # self.diversity = []
-                # self.mean_fit_plt = []
-                # self.best_fit_plt = []
-        # print ('=====================\nLast population:\n{}'.format(self.__str__()))
+        execution = 0
+        while (execution < 10):
+            generation = 0
+            while(generation < self.generations):
+                self._diversity()
+                parents = self._select()
+                self._crossover(parents)
+                self._mutate()
+                generation += 1
+            self.div.append(self.diversity)
+            self.avg.append(self.mean_fit_plt)
+            self.diversity = []
+            self.mean_fit_plt = []
+            self.best_fit_plt = []
+            execution += 1
         self.get_best_result()
         self._plot()
 
@@ -129,26 +131,28 @@ class Population():
         return winners
 
     def _plot(self):
-        ''' Fig 1 - Fitness '''
-        plt.figure(1)
-        plt.ylabel('fitness')
-        plt.xlabel('generation')
-        plt.plot(self.best_fit_plt)
-        plt.plot(self.mean_fit_plt)
+        # ''' Fig 1 - Fitness '''
+        # plt.figure(1)
+        # plt.ylabel('fitness')
+        # plt.xlabel('generation')
+        # plt.plot(self.best_fit_plt)
+        # plt.plot(self.mean_fit_plt)
 
         # plt.figure(2)
-        # avg = np.sum(self.avg, axis=0) / len(self.avg)
-        # plt.plot(list(avg))
-        # plt.plot(list(np.std(self.avg, axis=0)))
-        # plt.ylabel('std deviation')
-        # plt.xlabel('generation')
-        # plt.legend(['best', 'avg'])
+        avg = np.sum(self.avg, axis=0) / len(self.avg)
+        plt.plot(list(avg))
+        plt.plot(list(np.std(self.avg, axis=0)))
+        plt.ylabel('fitness')
+        plt.xlabel('generation')
+        plt.legend(['média', 'desvio padrão'])
 
         ''' Fig 2 - Diversidade '''
         plt.figure(3)
-        # plt.plot(list(np.sum(self.div, axis=0) / len(self.div)))
-        self.diversity = [(float(x) / max(self.diversity)) for x in self.diversity]
-        plt.plot(self.diversity)
+        # self.div = [(float(x) / max(self.div)) for x in self.div]
+        max_div = max([max(x) for x in self.div])
+        list_div = list(np.sum(self.div, axis=0) / max_div * len(self.div))
+        plt.plot(list_div / max(list_div))
+        # plt.plot(self.div)
         plt.ylabel('diversity')
         plt.xlabel('generation')
 
