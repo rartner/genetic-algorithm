@@ -28,27 +28,27 @@ def random_search(size, generations=100000):
         fitness_value = fitness.queens(size, chromosome)
         solutions.append(fitness_value)
         total_fitness += fitness_value
-        if (fitness_value > best_solution['fitness']):
-            best_solution['fitness'] = fitness_value
-            best_solution['chromosome'] = chromosome
+        if fitness_value > best_solution["fitness"]:
+            best_solution["fitness"] = fitness_value
+            best_solution["chromosome"] = chromosome
     return (best_solution, solutions)
 
 
 def plot(avg_solutions, executions):
     """Plot fitness for the executions."""
-    plt.ylabel('fitness')
-    plt.xlabel('generation')
+    plt.ylabel("fitness")
+    plt.xlabel("generation")
     plt.plot(avg_solutions)
-    plt.legend(['média'])
+    plt.legend(["média"])
     plt.show()
 
 
 def gest_best_solution(best_solutions):
     """Describe the best solution from random search."""
-    best_solutions = sorted(best_solutions, key=lambda x: x['fitness'])
+    best_solutions = sorted(best_solutions, key=lambda x: x["fitness"])
     best = best_solutions[len(best_solutions) - 1]
-    print (best)
-    get_clashes(best['chromosome'])
+    print(best)
+    get_clashes(best["chromosome"])
 
 
 def get_clashes(solution):
@@ -57,14 +57,14 @@ def get_clashes(solution):
     gain = 0
     for i in range(len(solution)):
         for j in range(len(solution)):
-            if (i != j):
-                dx = abs(i-j)
+            if i != j:
+                dx = abs(i - j)
                 dy = abs(solution[i] - solution[j])
-                if(dx == dy):
+                if dx == dy:
                     clashes += 1
-        if (i % 2 == 0):
+        if i % 2 == 0:
             gain += math.sqrt((solution[i] + 1) + (i * len(solution)))
         else:
             gain += math.log10((solution[i] + 1) + (i * len(solution)))
-    print ('Gain:', gain)
-    print ('Clashes:', clashes)
+    print("Gain:", gain)
+    print("Clashes:", clashes)

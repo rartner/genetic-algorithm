@@ -41,7 +41,7 @@ class Population():
 
     def evolve(self):
         execution = 0
-        while (execution < 10):
+        while (execution < 1):
             generation = 0
             while(generation < self.generations):
                 self._diversity()
@@ -56,7 +56,7 @@ class Population():
             self.best_fit_plt = []
             execution += 1
         self.get_best_result()
-        self._plot()
+        # self._plot()
 
     def _select(self):
         max_fitness = 0.0
@@ -144,7 +144,7 @@ class Population():
         plt.plot(list(np.std(self.avg, axis=0)))
         plt.ylabel('fitness')
         plt.xlabel('generation')
-        plt.legend(['média', 'desvio padrão'])
+        plt.legend(['media', 'desvio padrao'])
 
         ''' Fig 2 - Diversidade '''
         plt.figure(3)
@@ -161,13 +161,14 @@ class Population():
     def get_best_result(self):
         best = sorted(self.individuals, key=lambda i: i.fitness, reverse=True)[0]
         best.eval_fitness()
-        if (hasattr(best, 'num_genes')):
-            if (best.num_genes):
-                print ('Best individual: {}'.format(best.get_result()))
-        else:
-            print ('=====================\nBest individual:\n{}. \nFitness: {}'.format(str(best), best.fitness))
-            if (best.problem == 'qp'):
-                print ('Clashes: ', best.get_clashes())
+        best.show_board()
+        # if (hasattr(best, 'num_genes')):
+        #     if (best.num_genes):
+        #         print ('Best individual: {}'.format(best.get_result()))
+        # else:
+        #     print ('=====================\nBest individual:\n{}. \nFitness: {}'.format(str(best), best.fitness))
+        #     if (best.problem == 'qp'):
+        #         print ('Clashes: ', best.get_clashes())
 
     def linear_adjustment(self):
         sortd = sorted(self.individuals, key=lambda i: i.fitness)

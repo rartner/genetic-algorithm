@@ -10,25 +10,25 @@ def queens(size, chromosome):
     max_weight = 0
     weight_diagonal = [(x + 1) + (x * size) for x in range(size)]
     for i in range(size):
-        if (i % 2 == 0):
+        if i % 2 == 0:
             max_weight += math.sqrt(weight_diagonal[i])
         else:
             max_weight += math.log10(weight_diagonal[i])
 
         for j in range(size):
-            if (i != j):
-                dx = abs(i-j)
+            if i != j:
+                dx = abs(i - j)
                 dy = abs(chromosome[i] - chromosome[j])
-                if(dx == dy):
+                if dx == dy:
                     clashes += 1
         gain = (chromosome[i] + 1) + (i * size)
-        if (i % 2 == 0):
+        if i % 2 == 0:
             gain = math.sqrt(gain)
         else:
             gain = math.log10(gain)
         weight += gain
     penalty = 1 - clashes / ((size) ** 2)
-    return ((weight / max_weight) * penalty)
+    return (weight / max_weight) * penalty
 
 
 def ackley(size, chromosome):
@@ -39,8 +39,8 @@ def ackley(size, chromosome):
         first_sum += gene ** 2.0
         second_sum += math.cos(2.0 * math.pi * gene)
     n = float(size)
-    fst = -20.0*math.exp(-0.2*math.sqrt(first_sum/n))
-    snd = math.exp(second_sum/n) + 20 + math.e
+    fst = -20.0 * math.exp(-0.2 * math.sqrt(first_sum / n))
+    snd = math.exp(second_sum / n) + 20 + math.e
     return 32 - fst - snd
 
 

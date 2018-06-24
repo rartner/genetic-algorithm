@@ -2,3 +2,5 @@ __pycache__
 .git
 .gitignore
 __graficos__
+*.pyc 
+.vscode
