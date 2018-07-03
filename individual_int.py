@@ -2,7 +2,7 @@ import copy
 import cv2
 import math
 import numpy as np
-from scipy.spatial.distance import euclidean
+from scipy.spatial.distance import euclidean, cityblock
 
 
 class Individual_Int:
@@ -10,7 +10,7 @@ class Individual_Int:
         self.size = 100
         self.min_bound = 1
         self.max_bound = 12
-        self.crossover = "un"
+        self.crossover = "op"
         self.chromosome = self.__init_chromosome()
         self.board = [
                         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -53,7 +53,7 @@ class Individual_Int:
         visited = [[10, 1]]
         finish_position = np.array([1, 21])
         closest = [100, actual_position]
-        good_movements = 0
+        # good_movements = 0.0
         for gene in self.chromosome:
             new_position = None
             possible_movements = self.get_possible_movements(
@@ -62,19 +62,29 @@ class Individual_Int:
             if (len(possible_movements) > 0):
                 movement = gene % len(possible_movements)
                 new_position = actual_position + possible_movements[movement]
-                good_movements += 1
+                # if list(new_position) == list(finish_position):
+                    # print ('deu boa') 
+                    # self.show_board()
+                # if list(new_position) == list(visited[len(visited) - 1]):
+                #     good_movements += 0.5
+                # else:
+                #     good_movements += 1
                 last_position = np.array(actual_position)
                 actual_position = np.array(new_position)
                 visited.append(list(actual_position))
-                dst = euclidean(actual_position, finish_position)
+                dst = cityblock(actual_position, finish_position) / 40
+                # walls = self.count_walls(actual_position) / 100
                 if dst < closest[0]:
                     closest = [dst, actual_position]
 
-        distance = euclidean(closest[1], finish_position) / 40
+        distance = cityblock(closest[1], finish_position) / 55
+        # walls = 100 - self.count_walls(actual_position) / 100
         # penalty = (wall_colisions / 80) + (bad_movements / 80)
         # self.fitness = max(0, (good_movements / 100) - penalty + distance * 0.8)
         # self.fitness = max(0, (good_movements / 100))
-        self.fitness = max(0, (good_movements / 100) + distance * 0.8)
+        # self.fitness = max(0, (good_movements / 100) * (1 - distance))
+        # self.fitness = max(0, (0.1 * (good_movements / 100)) * (0.9 * (1 - distance)))
+        self.fitness = (1 - distance)
 
     def get_possible_movements(self, position, last_position, visited):
         """Get the number of possible movements in the position."""
@@ -86,6 +96,7 @@ class Individual_Int:
                 self.board[new_position[0]][new_position[1]] == 1
                 and list(new_position) not in visited
             ):
+            # if self.board[new_position[0]][new_position[1]] == 1:
                 if not (
                     new_position[0] >= 30
                     or new_position[0] < 0
@@ -94,6 +105,37 @@ class Individual_Int:
                 ):
                     possible_movements.append(np.array(movement))
         return possible_movements
+
+
+    def count_walls(self, position):
+        finish_position = np.array([1, 21])
+        dy = abs(finish_position[0] - position[0])
+        dx = abs(finish_position[1] - position[1])
+        colisions = 0
+        if position[0] < finish_position[0]:
+            if position[1] < finish_position[1]:
+                for y in range(position[0], finish_position[0] + 1):
+                    for x in range(position[1], finish_position[1] + 1):
+                        if self.board[y][x] == 0:
+                            colisions += 1
+            else:
+                for y in range(position[0], finish_position[0] + 1):
+                    for x in range(finish_position[1], position[1] - 1, -1):
+                        if self.board[y][x] == 0:
+                            colisions += 1
+        else:
+            if position[1] < finish_position[1]:
+                for y in range(finish_position[0], position[0] - 1, - 1):
+                    for x in range(position[1], finish_position[1] + 1):
+                        if self.board[y][x] == 0:
+                            colisions += 1
+            else:
+                for y in range(finish_position[0], position[0] - 1, - 1):
+                    for x in range(finish_position[1], position[1] - 1, -1):
+                        if self.board[y][x] == 0:
+                            colisions += 1
+        return colisions
+
 
     def mutate(self, mtax):
         for gene in range(self.size):
@@ -165,7 +207,10 @@ class Individual_Int:
             if len(possible_movements) > 0:
                 movement = gene % len(possible_movements)
                 new_position = actual_position + possible_movements[movement]
-                good_movements += 1
+                if list(new_position) == list(visited[len(visited) - 1]):
+                    good_movements += 0.5
+                else:
+                    good_movements += 1
                 last_position = np.array(actual_position)
                 actual_position = np.array(new_position)
                 visited.append(list(actual_position))
@@ -181,8 +226,10 @@ class Individual_Int:
         )
         cv2.imshow("final", self.board)
         cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
         print("movimentos bons:", good_movements)
+        print (self.fitness)
+
 
     def __str__(self):
         return np.array2string(self.chromosome)

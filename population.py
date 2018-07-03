@@ -1,6 +1,7 @@
 import math
 import random
 import time
+from threading import Thread
 import numpy as np
 import matplotlib.pyplot as plt
 from copy import deepcopy
@@ -56,12 +57,19 @@ class Population():
             self.best_fit_plt = []
             execution += 1
         self.get_best_result()
-        # self._plot()
+        self._plot()
 
     def _select(self):
         max_fitness = 0.0
+        threads = []
         for i in self.individuals:
-            i.eval_fitness()
+            thread = Thread(target=i.eval_fitness())
+            threads.append(thread)
+            thread.start()
+        for t in threads:
+            t.join()
+        for i in self.individuals:
+            # i.eval_fitness()
             if (i.fitness > max_fitness):
                 max_fitness = i.fitness
                 if self.best_individual is None:
