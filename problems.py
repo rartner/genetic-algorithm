@@ -1,5 +1,5 @@
 """Collection of toy problems for testing the algorithm."""
-import fitness
+import fitness, mutation, crossover, selection
 
 # TODO: create fitness, crossover and mutation lib
 
@@ -39,7 +39,7 @@ queens = {
     "encoding": "int-perm",
     "fitness": fitness.queens,
     "crossover": None,
-    "mutation": None
+    "mutation": mutation.inversion
 }
 
 ackley = {
@@ -47,7 +47,7 @@ ackley = {
     "encoding": "real",
     "fitness": fitness.ackley,
     "crossover": None,
-    "mutation": None
+    "mutation": mutation.delta
 }
 
 ackley_bin = {
@@ -55,7 +55,7 @@ ackley_bin = {
     "encoding": "bin",
     "fitness": None,
     "crossover": None,
-    "mutation": None
+    "mutation": mutation.bitflip
 }
 
 even_odd = {
@@ -63,7 +63,7 @@ even_odd = {
     "encoding": "int",
     "fitness": fitness.even_odd,
     "crossover": None,
-    "mutation": None
+    "mutation": mutation.randint
 }
 
 maze = {
@@ -71,5 +71,5 @@ maze = {
     "encoding": "int",
     "fitness": fitness.maze,
     "crossover": None,
-    "mutation": None
+    "mutation": mutation.randint
 }
