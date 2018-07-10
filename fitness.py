@@ -1,6 +1,8 @@
 """Module containing the fitness functions for the toy problems."""
+import helper
 import math
 import numpy as np
+from scipy.spatial.distance import cityblock
 
 
 def queens(size, chromosome):
@@ -55,3 +57,27 @@ def even_odd(size, chromosome):
             if chromosome[gene + 1] % 2 == 0:
                 fitness_value += 1
     return fitness_value
+
+
+def maze(size, chromosome):
+    actual_position = np.array([10, 1])
+    last_position = np.array([10, 1])
+    visited = [[10, 1]]
+    finish_position = np.array([1, 21])
+    closest = [100, actual_position]
+    for gene in chromosome:
+        new_position = None
+        possible_movements = helper.get_possible_movements(
+            actual_position, last_position, visited
+        )
+        if len(possible_movements) > 0:
+            movement = gene % len(possible_movements)
+            new_position = actual_position + possible_movements[movement]
+            last_position = np.array(actual_position)
+            actual_position = np.array(new_position)
+            visited.append(list(actual_position))
+            dst = cityblock(actual_position, finish_position) / 40
+            if dst < closest[0]:
+                closest = [dst, actual_position]
+    distance = cityblock(closest[1], finish_position) / 55
+    return 1 - distance
