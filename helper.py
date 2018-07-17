@@ -51,3 +51,30 @@ def get_possible_movements(position, last_position, visited):
             ):
                 possible_movements.append(np.array(movement))
     return possible_movements
+
+
+def pmx_order(fst_child, snd_child, idx1, idx2):
+  slice_1, slice_2 = fst_child[idx1:idx2], snd_child[idx1:idx2]
+  for i in range(len(fst_child)):
+    if (i < idx1 or i >= idx2):
+      wait = True
+      while (wait):
+        if (fst_child[i] in slice_1):
+          pos = list(slice_1).index(fst_child[i])
+          fst_child[i] = slice_2[pos]
+        if ((fst_child == fst_child[i]).sum() > 1):
+          wait = True
+        else:
+          wait = False
+  for i in range(len(snd_child)):
+    if (i < idx1 or i >= idx2):
+      wait = True
+      while (wait):
+        if (snd_child[i] in slice_2):
+          pos = list(slice_2).index(snd_child[i])
+          snd_child[i] = slice_1[pos]
+        if ((snd_child == snd_child[i]).sum() > 1):
+          wait = True
+        else:
+          wait = False
+  return fst_child, snd_child
