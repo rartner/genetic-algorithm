@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-def roulette(individuals, pop_size):
+def roulette(individuals, pop_size, tournment_size=0):
   list_fitness = [ind.fitness for ind in individuals]
   sum_fitness = np.sum(list_fitness)
   list_fitness = list_fitness / sum_fitness
