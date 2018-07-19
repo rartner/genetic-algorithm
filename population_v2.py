@@ -60,7 +60,7 @@ class Population:
     def get_fitness(self):
       max_fitness = 0.0
       for ind in self.individuals:
-        ind.fitness = self.eval_fitness(ind)
+        ind.fitness = self.eval_fitness(ind.chromosome)
         if ind.fitness > max_fitness:
           max_fitness = ind.fitness
           if self.best_individual is None:
@@ -74,7 +74,8 @@ class Population:
       for ind in range(0, self.pop_size, 2):
         ctax = np.random.uniform(0, 1)
         if ctax < self.crossover_tax:
-          childs = self.mate(parents[ind], parents[ind + 1])
+          childs = self.mate(parents[ind].chromosome,
+                             parents[ind + 1].chromosome)
           next_generation.append(childs[0])
           next_generation.append(childs[1])
         else:
@@ -88,7 +89,7 @@ class Population:
     def mutation(self, individuals):
       for ind in individuals:
         self.mutate(
-          ind, self.mutation_tax, self.lower_bound, self.upper_bound
+          ind.chromosome, self.mutation_tax, self.lower_bound, self.upper_bound
         )
 
 
