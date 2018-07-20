@@ -17,7 +17,8 @@ ackley = {
     "init_population": init.real,
     "fitness": fitness.ackley,
     "crossover": crossover.arithmetic,
-    "mutation": mutation.delta
+    "mutation": mutation.delta,
+    "selection": selection.roulette
 }
 
 ackley_bin = {

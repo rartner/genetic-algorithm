@@ -78,8 +78,8 @@ def blend(fst_parent, snd_parent):
 
 
 def arithmetic(fst_parent, snd_parent):
-  childs = [list(fst_parent), list(snd_parent)]
+  childs = [np.array(fst_parent), np.array(snd_parent)]
   alpha = np.random.uniform(0, 1)
   childs[0] = (alpha * childs[0]) + ((1 - alpha) * childs[1])
   childs[1] = ((1 - alpha) * childs[0]) + (alpha * childs[1])
-  return childs
+  return [list(childs[0]), list(childs[1])]

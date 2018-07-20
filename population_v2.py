@@ -1,5 +1,6 @@
 import numpy as np
 from copy import deepcopy
+from individual import Individual
 
 
 class Population:
@@ -22,7 +23,7 @@ class Population:
         self.mutate = problem["mutation"]
 
         self.individuals = problem["init_population"](
-            chromo_size, lower_bound, upper_bound
+            chromo_size, pop_size, lower_bound, upper_bound
         )
         self.num_generations = num_generations
         self.pop_size = pop_size
@@ -40,7 +41,7 @@ class Population:
         generation = 0
         while generation < self.num_generations:
             self.get_diversity()
-            self.get_fitness()
+            self.get_fitness(self.individuals)
             parents = self.select(
               self.individuals, self.pop_size, None
             )
@@ -57,10 +58,10 @@ class Population:
         self.diversity.append(div)
 
 
-    def get_fitness(self):
+    def get_fitness(self, individuals):
       max_fitness = 0.0
-      for ind in self.individuals:
-        ind.fitness = self.eval_fitness(ind.chromosome)
+      for ind in individuals:
+        ind.fitness = self.eval_fitness(self.chromo_size, ind.chromosome)
         if ind.fitness > max_fitness:
           max_fitness = ind.fitness
           if self.best_individual is None:
@@ -76,11 +77,12 @@ class Population:
         if ctax < self.crossover_tax:
           childs = self.mate(parents[ind].chromosome,
                              parents[ind + 1].chromosome)
-          next_generation.append(childs[0])
-          next_generation.append(childs[1])
+          next_generation.append(Individual(childs[0]))
+          next_generation.append(Individual(childs[1]))
         else:
-          next_generation.append(parents[ind])
-          next_generation.append(parents[ind + 1])
+          next_generation.append(Individual(parents[ind]))
+          next_generation.append(Individual(parents[ind + 1]))
+      self.get_fitness(next_generation)
       next_generation = sorted(next_generation, key=lambda ind: ind.fitness)
       next_generation[0] = deepcopy(self.best_individual)
       return next_generation

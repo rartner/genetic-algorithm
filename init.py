@@ -14,7 +14,10 @@ def int_perm(chromo_size, lower_bound=0, upper_bound=10):
     return Individual(np.random.permutation(chromo_size))
 
 
-def real(chromo_size, lower_bound=0, upper_bound=10):
-    return Individual(
-        np.random.uniform(lower_bound, upper_bound, size=chromo_size)
-    )
+def real(chromo_size, pop_size, lower_bound=0, upper_bound=10):
+    chromos = []
+    for ind in range(pop_size):
+        chromos.append(np.random.uniform(
+            lower_bound, upper_bound, size=chromo_size
+        ))
+    return [Individual(chromo) for chromo in chromos]
