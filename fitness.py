@@ -34,7 +34,6 @@ def queens(size, chromosome):
 
 
 def ackley(size, chromosome):
-    """Fitness for the ackley's function."""
     first_sum = 0.0
     second_sum = 0.0
     for gene in chromosome:
@@ -43,7 +42,7 @@ def ackley(size, chromosome):
     n = float(size)
     fst = -20.0 * math.exp(-0.2 * math.sqrt(first_sum / n))
     snd = math.exp(second_sum / n) + 20 + math.e
-    return 32 - fst - snd
+    return 32 - (fst - snd)
 
 
 def even_odd(size, chromosome):

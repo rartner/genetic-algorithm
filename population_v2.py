@@ -1,4 +1,5 @@
 import numpy as np
+import selection
 from copy import deepcopy
 from individual import Individual
 
@@ -14,13 +15,17 @@ class Population:
         mutation_tax,
         lower_bound,
         upper_bound,
+        tsize=None,
     ):
         self.description = problem["description"]
         self.encoding = problem["encoding"]
         self.eval_fitness = problem["fitness"]
-        self.select = problem["selection"]
         self.mate = problem["crossover"]
         self.mutate = problem["mutation"]
+        if tsize is None:
+          self.select = selection.roulette
+        else:
+          self.select = selection.tournment
 
         self.individuals = problem["init_population"](
             chromo_size, pop_size, lower_bound, upper_bound
@@ -32,6 +37,7 @@ class Population:
         self.mutation_tax = mutation_tax
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
+        self.tsize = tsize
 
         self.diversity = []
         self.best_individual = None
@@ -43,12 +49,13 @@ class Population:
             self.get_diversity()
             self.get_fitness(self.individuals)
             parents = self.select(
-              self.individuals, self.pop_size, None
+              self.individuals, self.pop_size, self.tsize
             )
             next_generation = self.crossover(parents)
             self.mutation(next_generation)
             self.individuals = next_generation
             generation += 1
+        print (self.best_individual.chromosome)
 
 
     def get_diversity(self):
@@ -80,8 +87,8 @@ class Population:
           next_generation.append(Individual(childs[0]))
           next_generation.append(Individual(childs[1]))
         else:
-          next_generation.append(Individual(parents[ind]))
-          next_generation.append(Individual(parents[ind + 1]))
+          next_generation.append(Individual(parents[ind].chromosome))
+          next_generation.append(Individual(parents[ind + 1].chromosome))
       self.get_fitness(next_generation)
       next_generation = sorted(next_generation, key=lambda ind: ind.fitness)
       next_generation[0] = deepcopy(self.best_individual)
