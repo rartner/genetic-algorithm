@@ -45,9 +45,9 @@ class Population:
 
     def evolve(self):
         generation = 0
+        self.get_fitness(self.individuals)
         while generation < self.num_generations:
             self.get_diversity()
-            self.get_fitness(self.individuals)
             parents = self.select(
               self.individuals, self.pop_size, self.tsize
             )
