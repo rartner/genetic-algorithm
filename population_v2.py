@@ -81,14 +81,17 @@ class Population:
       next_generation = []
       for ind in range(0, self.pop_size, 2):
         ctax = np.random.uniform(0, 1)
-        if ctax < self.crossover_tax:
-          childs = self.mate(parents[ind].chromosome,
-                             parents[ind + 1].chromosome)
-          next_generation.append(Individual(childs[0]))
-          next_generation.append(Individual(childs[1]))
-        else:
+        if (ind + 1) == self.pop_size:
           next_generation.append(Individual(parents[ind].chromosome))
-          next_generation.append(Individual(parents[ind + 1].chromosome))
+        else:
+          if ctax < self.crossover_tax:
+            childs = self.mate(parents[ind].chromosome,
+                              parents[ind + 1].chromosome)
+            next_generation.append(Individual(childs[0]))
+            next_generation.append(Individual(childs[1]))
+          else:
+            next_generation.append(Individual(parents[ind].chromosome))
+            next_generation.append(Individual(parents[ind + 1].chromosome))
       self.get_fitness(next_generation)
       next_generation = sorted(next_generation, key=lambda ind: ind.fitness)
       next_generation[0] = deepcopy(self.best_individual)
