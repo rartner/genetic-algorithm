@@ -1,6 +1,5 @@
 import argparse
 import numpy as np
-import sys, os
 import problems
 from population import Population
 
@@ -9,7 +8,7 @@ def main():
 
     """ required arguments """
     required = parser.add_argument_group('required arguments')
-    required.add_argument('-problem', help="name of the problem at the problems.py module", required=True)
+    required.add_argument('-problem', help="name of the problem at the problems.py module", required=True, choices=['maze', 'even_odd', 'ackley', 'queens'])
     required.add_argument('-gen', type=int, help='n of generations', required=True)
 
     """ optional arguments """
