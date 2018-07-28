@@ -9,7 +9,8 @@ def main():
 
     """ required arguments """
     required = parser.add_argument_group('required arguments')
-    required.add_argument('-gen', type=int, help='n of generations')
+    required.add_argument('-problem', help="name of the problem at the problems.py module", required=True)
+    required.add_argument('-gen', type=int, help='n of generations', required=True)
 
     """ optional arguments """
     parser.add_argument('-lb',   type=int, help='lower bound', default=0)
@@ -21,8 +22,9 @@ def main():
     parser.add_argument('-psize', type=int, help='population size', default=10)
 
     args = parser.parse_args()
-    
-    pop = Population(problems.ackley,
+    problem = problems.get_problem(args.problem)
+
+    pop = Population(problem,
                      args.gen,
                      args.psize,
                      args.csize,

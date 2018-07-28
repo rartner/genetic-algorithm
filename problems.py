@@ -1,6 +1,17 @@
 """Collection of toy problems for testing the algorithm."""
 import fitness, mutation, crossover, selection, init, show_best
 
+def get_problem(name):
+    if name == 'queens':
+        return queens
+    elif name == 'ackley':
+        return ackley
+    elif name == 'even_odd':
+        return even_odd
+    elif name == 'maze':
+        return maze
+    else:
+        raise Exception('Problem not found')
 
 queens = {
     "description": "queens problem considering variable weights",
