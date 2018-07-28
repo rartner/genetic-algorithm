@@ -13,7 +13,7 @@ def int(chromo_size, pop_size, lower_bound=0, upper_bound=10):
     chromos = []
     for ind in range(pop_size):
         chromos.append(np.random.randint(lower_bound, upper_bound, size=100))
-    return [Individual(chromos) for chromo in chromos]
+    return [Individual(chromo) for chromo in chromos]
 
 
 def int_perm(chromo_size, pop_size, lower_bound=0, upper_bound=10):

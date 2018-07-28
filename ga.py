@@ -22,7 +22,7 @@ def main():
 
     args = parser.parse_args()
 
-    pop = Population(problems.ackley,
+    pop = Population(problems.even_odd,
                      args.gen,
                      args.psize,
                      args.csize,
