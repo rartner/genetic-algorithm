@@ -21,8 +21,8 @@ def main():
     parser.add_argument('-psize', type=int, help='population size', default=10)
 
     args = parser.parse_args()
-
-    pop = Population(problems.even_odd,
+    
+    pop = Population(problems.ackley,
                      args.gen,
                      args.psize,
                      args.csize,

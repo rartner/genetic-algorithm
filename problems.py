@@ -1,5 +1,5 @@
 """Collection of toy problems for testing the algorithm."""
-import fitness, mutation, crossover, selection, init
+import fitness, mutation, crossover, selection, init, show_best
 
 
 queens = {
@@ -8,7 +8,8 @@ queens = {
     "init_population": init.int_perm,
     "fitness": fitness.queens,
     "crossover": crossover.pmx,
-    "mutation": mutation.inversion
+    "mutation": mutation.inversion,
+    "show_best": show_best.best
 }
 
 ackley = {
@@ -18,7 +19,8 @@ ackley = {
     "fitness": fitness.ackley,
     "crossover": crossover.arithmetic,
     "mutation": mutation.delta,
-    "selection": selection.roulette
+    "selection": selection.roulette,
+    "show_best": show_best.best
 }
 
 ackley_bin = {
@@ -27,7 +29,8 @@ ackley_bin = {
     "init_population": init.bin,
     "fitness": None,
     "crossover": crossover.uniform,
-    "mutation": mutation.bitflip
+    "mutation": mutation.bitflip,
+    "show_best": show_best.best
 }
 
 even_odd = {
@@ -36,7 +39,8 @@ even_odd = {
     "init_population": init.int,
     "fitness": fitness.even_odd,
     "crossover": crossover.uniform,
-    "mutation": mutation.randint
+    "mutation": mutation.randint,
+    "show_best": show_best.best
 }
 
 maze = {
@@ -45,5 +49,6 @@ maze = {
     "init_population": init.int,
     "fitness": fitness.maze,
     "crossover": crossover.one_point,
-    "mutation": mutation.randint
+    "mutation": mutation.randint,
+    "show_best": show_best.maze_solution
 }

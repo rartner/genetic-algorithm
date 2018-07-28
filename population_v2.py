@@ -22,6 +22,7 @@ class Population:
         self.eval_fitness = problem["fitness"]
         self.mate = problem["crossover"]
         self.mutate = problem["mutation"]
+        self.show_best = problem["show_best"]
         if tsize is None:
           self.select = selection.roulette
         else:
@@ -55,7 +56,8 @@ class Population:
             self.mutation(next_generation)
             self.individuals = next_generation
             generation += 1
-        print (self.best_individual.chromosome)
+        # print (self.best_individual.chromosome)
+        self.show_best(self.best_individual)
 
 
     def get_diversity(self):
