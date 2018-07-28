@@ -1,17 +1,19 @@
 """Collection of toy problems for testing the algorithm."""
 import fitness, mutation, crossover, selection, init, show_best
 
+
 def get_problem(name):
-    if name == 'queens':
+    if name == "queens":
         return queens
-    elif name == 'ackley':
+    elif name == "ackley":
         return ackley
-    elif name == 'even_odd':
+    elif name == "even_odd":
         return even_odd
-    elif name == 'maze':
+    elif name == "maze":
         return maze
     else:
-        raise Exception('Problem not found')
+        raise Exception("Problem not found")
+
 
 queens = {
     "description": "queens problem considering variable weights",
@@ -20,7 +22,7 @@ queens = {
     "fitness": fitness.queens,
     "crossover": crossover.pmx,
     "mutation": mutation.inversion,
-    "show_best": show_best.best
+    "show_best": show_best.best,
 }
 
 ackley = {
@@ -31,7 +33,7 @@ ackley = {
     "crossover": crossover.arithmetic,
     "mutation": mutation.delta,
     "selection": selection.roulette,
-    "show_best": show_best.best
+    "show_best": show_best.best,
 }
 
 ackley_bin = {
@@ -41,7 +43,7 @@ ackley_bin = {
     "fitness": None,
     "crossover": crossover.uniform,
     "mutation": mutation.bitflip,
-    "show_best": show_best.best
+    "show_best": show_best.best,
 }
 
 even_odd = {
@@ -51,7 +53,7 @@ even_odd = {
     "fitness": fitness.even_odd,
     "crossover": crossover.uniform,
     "mutation": mutation.randint,
-    "show_best": show_best.best
+    "show_best": show_best.best,
 }
 
 maze = {
@@ -61,5 +63,5 @@ maze = {
     "fitness": fitness.maze,
     "crossover": crossover.one_point,
     "mutation": mutation.randint,
-    "show_best": show_best.maze_solution
+    "show_best": show_best.maze_solution,
 }
