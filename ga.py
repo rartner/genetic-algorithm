@@ -2,7 +2,7 @@ import argparse
 import numpy as np
 import sys, os
 import problems
-from population_v2 import Population
+from population import Population
 
 def main():
     parser = argparse.ArgumentParser(description='Genetic algorithm')
